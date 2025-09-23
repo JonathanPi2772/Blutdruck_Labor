@@ -1,0 +1,56 @@
+Messungen Blutdruck:
+
+Subjekte: 
+P01 — Jonathan
+P02 — Antonio
+P03 — Elena
+P04 — Marcel
+
+
+
+
+———
+P01_REST_01_100825
+	Beurer 104/62
+	NAIS 97/60
+
+P01_REST_02_100825
+	Beurer 98/57
+	NAIS 106/55
+
+P01_ACTIV_01_160925
+	Beurer 147/81
+	NAIS 128/78
+———
+P02_REST_01_100825
+	Beurer 111/70
+	NAIS —
+
+P02_REST_02_160925
+	Beurer 113/66
+	NAIS 116/75
+
+P02_ACTIV_01_160925
+	Beurer 134 /77
+	NAIS 127 / 76
+———
+P03_REST_01_100825
+	Beurer —
+	NAIS 109/63
+
+P03_REST_02_160925
+	Beurer 100/59
+	NAIS 112/61
+
+P03_ACTIV_02_160925
+	Beurer 112/61
+	NAIS 111/67
+———
+P04_REST_01_160925
+	Beurer 101/68
+	NAIS 114/71
+
+P04_ACTIV_01_160925
+	Beurer 125/70
+	NAIS 127 / 77
+
