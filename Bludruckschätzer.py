@@ -39,7 +39,7 @@ class Results:
 
 def readDataIn() -> Signal:
     """
-    Reads data from Messurement in
+    Reads data from Measurement in
     :return: sample time and/with Cuff Pressure as ndarray
     """
     file_number = input("Welche Messung soll analysiert werden? -- ")
@@ -53,8 +53,8 @@ def readDataIn() -> Signal:
     except KeyError or IndexError:
         raise Exception("The read in File has the wrong format")
 
-    # print(sample_time)
-    # print(sample_vCuffPressure)
+    #print(sample_time)
+    #print(sample_vCuffPressure)
 
     return Signal(sample_time, sample_vCuffPressure)
 
@@ -74,7 +74,7 @@ def separate_signals(signal: Signal) -> Signal:
             cutoff (float): Die Grenzfrequenz in Hz.
             fs (int): Die Abtastfrequenz.
         Returns:
-            Aktualisiertes signal
+            Aktualisiertes Signal
         """
     begin_index = np.where(signal.time == 3)[0]
     end_index = np.where(signal.vCuffPressure == np.max(signal.vCuffPressure))[0]

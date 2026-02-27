@@ -6,6 +6,11 @@ P02 — Antonio
 P03 — Elena
 P04 — Marcel
 
+P05 - Lukas
+P06 - Monika
+P07 - Jürgen
+P08 - Bianca
+
 
 
 
@@ -54,3 +59,49 @@ P04_ACTIV_01_160925
 	Beurer 125/70
 	NAIS 127 / 77
 
+
+---
+P05_REST_01_210925
+    Beurer 122/68, 56
+    NAIS 128/64, 56
+
+P05_ACTIV_01_210925
+    Beurer 137/74, 58
+    NAIS 160/70, 63
+---
+
+P06_REST_01_191025
+    Beurer 122/86, 54
+    nais 136/87, 52
+
+P06_ACTIV_01_191025
+    Beurer 141/64, 58
+    nais 156/84, 54
+---
+
+P07_REST_01_191025
+    Beurer 111/70, 66
+    nais 123/77, 61
+
+P07_ACTIV_01_191025
+    Beurer 150/74, 84
+    nais 145/76, 62
+---
+
+P08_REST_01_201025
+    Beurer 98/63, 62
+    nais 108/69, 63
+
+P08_ACTIV_01_201025
+    Beurer 124/64, 68
+    nais 124/75, 103
+---
+
+P08_REST_02_201025
+--> Beine über Kreuz und Manschette verdreht
+
+P08_REST_03_201025
+--> Bewegen von beiden Armen
+
+P08_REST_04_201025
+--> Mit beiden Beinen stampfen
