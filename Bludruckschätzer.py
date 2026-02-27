@@ -4,7 +4,7 @@ import scipy.io
 import numpy as np
 from numpy import ndarray
 import matplotlib.pyplot as plt
-from scipy.signal import butter, filtfilt, hilbert, savgol_filter
+from scipy.signal import butter, filtfilt, hilbert, savgol_filter, find_peaks
 
 FILEPATH = "Messungen"
 SAMPLING_FREQUENCY = 200
@@ -181,12 +181,29 @@ def predict_sys_and_dia(signal: Signal, raw_results: Results):
 
     # Suche nach dem diastolischen Punkt (ansteigende Flanke)
     rising_edge = signal.envelope[:raw_results.max_amplitude_index]
+    peaks, _ = find_peaks(rising_edge, prominence=0.1)
+
+    # 2. Create an array of zeros with the exact same shape and type
+    erased_signal = np.zeros_like(rising_edge)
+
+    # 3. Fill only the peak indices with the original values
+    erased_signal[peaks] = rising_edge[peaks]
+    rising_edge = erased_signal
+
     # Finde den Index, an dem die ansteigende Flanke dem Schwellenwert am nächsten kommt.
     diastolic_index = np.argmin(np.abs(rising_edge - diastolic_threshold))
     diastolic_pressure = signal.ramp[diastolic_index]
 
     # Suche nach dem systolischen Punkt (abfallende Flanke)
     falling_edge = signal.envelope[raw_results.max_amplitude_index:]
+    peaks, _ = find_peaks(falling_edge, prominence=0.1)
+
+    # 2. Create an array of zeros with the exact same shape and type
+    erased_signal = np.zeros_like(falling_edge)
+
+    # 3. Fill only the peak indices with the original values
+    erased_signal[peaks] = falling_edge[peaks]
+    falling_edge = erased_signal
     # Finde den Index, an dem die abfallende Flanke dem Schwellenwert am nächsten kommt.
     systolic_index_relative = np.argmin(np.abs(falling_edge - systolic_threshold))
     systolic_index = raw_results.max_amplitude_index + systolic_index_relative
@@ -267,7 +284,7 @@ if __name__ == "__main__":
         }, f, indent=4, ensure_ascii=False)"""
     processed_signal = separate_signals(signal)
     processed_signal = create_envelope(processed_signal)
-    k = 1/15  # Beispielwert für die Grenzfrequenz in Hz
+    k = 1/5  # Beispielwert für die Grenzfrequenz in Hz
     processed_signal = highpass_envelope(processed_signal, k)
     raw_results = maximum_amplitude_algorithm(processed_signal)
     results = predict_sys_and_dia(processed_signal, raw_results)
