@@ -120,6 +120,33 @@ def create_envelope(signal: Signal) -> Signal:
     return signal
 
 
+def highpass_envelope(signal: Signal, k: float) -> Signal:
+    """
+    Wendet einen Hochpassfilter auf die Hüllkurve an.
+    Args:
+        signal: Das Signal-Objekt mit der bereits berechneten Envelope.
+        k: Die Grenzfrequenz in Hz.
+    Returns:
+        Aktualisiertes Signal-Objekt.
+    """
+    if signal.envelope is None:
+        raise ValueError("Envelope wurde noch nicht berechnet.")
+
+    nyquist = 0.5 * SAMPLING_FREQUENCY
+    # Normalisierung der Grenzfrequenz k
+    normal_cutoff = k / nyquist
+
+    # Definition des Hochpassfilters (Butterworth 4. Ordnung)
+    b, a = butter(4, normal_cutoff, btype='high', analog=False)
+
+    # Filterung anwenden
+    filtered_envelope = filtfilt(b, a, signal.envelope)
+
+    # Die Envelope im Objekt aktualisieren
+    signal.envelope = filtered_envelope
+    return signal
+
+
 # --- Schritt 3: Anwendung des Maximum Amplitude Algorithmus (MAA) ---
 # Der Manschettendruck am Punkt der maximalen Oszillationsamplitude
 # wird als mittlerer arterieller Druck (MAP) geschätzt.
@@ -240,6 +267,8 @@ if __name__ == "__main__":
         }, f, indent=4, ensure_ascii=False)"""
     processed_signal = separate_signals(signal)
     processed_signal = create_envelope(processed_signal)
+    k = 1/15  # Beispielwert für die Grenzfrequenz in Hz
+    processed_signal = highpass_envelope(processed_signal, k)
     raw_results = maximum_amplitude_algorithm(processed_signal)
     results = predict_sys_and_dia(processed_signal, raw_results)
     visualize(processed_signal, results)
