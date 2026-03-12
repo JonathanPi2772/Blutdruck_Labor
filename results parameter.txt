@@ -1,0 +1,7 @@
+Optimiert auf Beurer:
+Beste Parameter: {'begin_index': 1, 'high_N': 2, 'low_N': 3, 'border_f': 1.648475101296686, 'use_absolute_value': False, 'peaks_distance': 154, 'window_size': 2.291477696530879, 'dia_treshhold': 0.7482381534642903, 'sys_trashhold': 0.8618229257116254}
+Optimiert auf Nais:
+Beste Parameter: {'begin_index': 3, 'high_N': 2, 'low_N': 1, 'border_f': 0.311269654162117, 'use_absolute_value': False, 'peaks_distance': 168, 'window_size': 3.8494571824512462, 'dia_treshhold': 0.6595769796590356, 'sys_trashhold': 0.6889636465544333}
+Optimiert auf Combined:
+Beste Parameter: {'begin_index': 1, 'high_N': 5, 'low_N': 5, 'border_f': 1.4727302354599732, 'use_absolute_value': True, 'peaks_distance': 165, 'window_size': 5.657079422588785, 'dia_treshhold': 0.794095733069117, 'sys_trashhold': 0.8626074091583769}
+
