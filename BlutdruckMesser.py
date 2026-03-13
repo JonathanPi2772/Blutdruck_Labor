@@ -89,7 +89,6 @@ class Signal:
 
 
     def plot_data(self):
-        print("Running Blutdruck Messer")
         fig, ax1 = plt.subplots()
 
         ax1.plot(self.time, self.vCuffPressure, color="blue", label="Raw Data")
@@ -151,7 +150,7 @@ def load_data(file_name: str) -> tuple[ndarray, ndarray]:
 def alogrithmus(messnummer: str, begin_index: int, high_N: int, low_N: int, border_f: float, use_absolute_value: bool,
                 peaks_distance: int, window_size: float,
                 dia_treshhold: float, sys_trashhold: float
-) -> tuple[float, float]:
+) -> tuple[float, float, Signal]:
     sample_time, sample_vCuffPressure = load_data(messnummer)
     signal = Signal(sample_time, sample_vCuffPressure)
     processed_signal = signal.extracting_ramp(
@@ -169,7 +168,7 @@ def alogrithmus(messnummer: str, begin_index: int, high_N: int, low_N: int, bord
         dia_treshhold=dia_treshhold,
         sys_trashhold=sys_trashhold
     )
-    return processed_signal.systolic_pressure, processed_signal.diastolic_pressure
+    return processed_signal.systolic_pressure, processed_signal.diastolic_pressure, processed_signal
 
 
 

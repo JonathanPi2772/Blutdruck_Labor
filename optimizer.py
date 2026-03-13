@@ -44,7 +44,7 @@ def objective(trial: Trial, ground_Truth: str = "COMBINED"):
         if sys is None or dia is None:
             continue
         try:
-            calc_sys, calc_dia = alogrithmus(
+            calc_sys, calc_dia, _ = alogrithmus(
                 messnummer=messnummer,
 
                 begin_index=begin_index,
