@@ -29,8 +29,9 @@ class Signal:
         begin_index = np.where(self.time == begin_index)[0] # After x Seconds
         if len(begin_index) == 0:
             raise Exception("Begin Index not found")
-        # Till the highest point, should be 190
+        # Bis zum höchsten Punkte, sollte 190 sein
         end_index = np.where(self.vCuffPressure == np.max(self.vCuffPressure))[0]
+        # Nur der relevante Teil des Signals wird benutzt
         processed_signal = Signal(
             sample_time=self.time[begin_index[0]:end_index[0]],
             sample_vCuffPressure=self.vCuffPressure[begin_index[0]:end_index[0]]
@@ -40,19 +41,22 @@ class Signal:
         # Alles unter 1 Hz kann entfernt/gesplittet werden. Das wäre der langsame Druckanstieg
         # Nutzung eines Hochpassfilters
 
-        # Koeffizienten des Filter
+        # Koeffizienten des Filters
+        # Hier wird ein Hochpassfilter erzeugt, dieser entfernt den langsamen Druckanstieg und lässt Herzschläge durch
         coff_b, coff_a = butter(N=high_N, Wn=border_f, btype="high", analog=False, fs=self.SAMPLING_FREQUENCY, output="ba")
-        # Filtfilt ist für med. Daten am besten. Es spiegelt an den Enden und filtert von beiden Seiten.
+        # Filtfilt ist für medizinische Daten am besten. Er spiegelt an den Enden und filtert von beiden Seiten.
         # Dadurch gibt es keine Artefakte am Anfang
         processed_signal.oscillations = filtfilt(b=coff_b, a=coff_a, x=processed_signal.vCuffPressure)
         if use_absolute_value:
             processed_signal.oscillations = np.abs(processed_signal.oscillations)
 
-        # Nun das was unter einem Herz ist ist der Anstieg des Drucks. Das braucht man später zur Berechnung
+        # Nun das was unter 1 Hertz ist, ist der Anstieg des Drucks. Das braucht man später zur Berechnung
+        # Hier wird ein Tiegfpassfilter erzeugt, dieser entfernt Herzschläge und behält den langsamen Druckanstieg
         coff_b, coff_a  = butter(N=low_N, Wn=border_f, btype="low", analog=False, fs=self.SAMPLING_FREQUENCY, output="ba")
         processed_signal.ramp = filtfilt(b=coff_b, a=coff_a,  x=processed_signal.vCuffPressure)
         return processed_signal
 
+    # Berechnet die Hüllkurve der Puls-Schwingungen
     def get_hüllenfunktion(self, peaks_distance:int=116, window_size:float=3.0):
         if self.ramp is not None and self.oscillations is not None:
             # Erstmal Peaks finden mit dem Abstand von geringen 70 Schlägen pro Minute, Puffer von 0.6
@@ -60,34 +64,46 @@ class Signal:
             peaks, _ = find_peaks(x=self.oscillations, distance=peaks_distance)
             # Interpolation zwischen den Peaks
             interp_func = interp1d(peaks, self.oscillations[peaks], kind='cubic', fill_value="extrapolate")
-            # Hüllenkurve über das ganze Zeitsignal
+            # Hüllenkurve über das ganze Zeitsignal wird erzeugt
             self.envelope = interp_func(np.arange(len(self.oscillations)))
-            # Smooth mit Window Size von x Sekunden
+            # Glätten mit Window Size von x Sekunden
             window = int(window_size * self.SAMPLING_FREQUENCY)
             self.smoothed_envelope = np.convolve(self.envelope, np.ones(window)/window, mode='same')
         else:
             raise Exception("Ramp is not available, Do this only with preprocessed signal")
 
+    # Berechnet MAP, systolisch und diastolisch
     def get_blutdruckwerte(self, dia_treshhold: float = 0.55, sys_trashhold: float = 0.75) -> tuple[float, float]:
+        # MAP (Maximum der Hüllkurve)
         self.map_index = np.argmax(self.smoothed_envelope)
         self.map_time = self.time[self.map_index]
         map_relative_pressure = self.smoothed_envelope[self.map_index]
         self.map_pressure = self.vCuffPressure[self.map_index]
 
-        # Dia
+        # Diastole
         rising_edge = np.zeros_like(self.smoothed_envelope)
         rising_edge[:self.map_index] = self.smoothed_envelope[:self.map_index]
         self.diastolic_index = np.argmin(np.abs(rising_edge - (map_relative_pressure * dia_treshhold)))
         self.diastolic_pressure = self.ramp[self.diastolic_index]
 
-        #Systolic
+        #Systole
         falling_edge = np.zeros_like(self.smoothed_envelope)
         falling_edge[self.map_index:] = self.smoothed_envelope[self.map_index:]
         self.systolic_index = np.argmin(np.abs(falling_edge - (map_relative_pressure * sys_trashhold)))
         self.systolic_pressure = self.ramp[self.systolic_index]
 
 
-
+    # Zeichnet alles in die Grafik ein
+    # Es werden folgende Kurven dargestellt:
+    # - Rohsignal (blau)
+    # - Rampe (grün)
+    # - Oszillationen (rot)
+    # - Envelope (orange)
+    # - Smoothed Envelope (schwarz)
+    # Zusätzlich werden folgende Punkte markiert:
+    # - MAP (schwarz)
+    # - Systole (grün)
+    # - Diastole (blau)
     def plot_data(self):
         fig, ax1 = plt.subplots()
 
@@ -169,8 +185,6 @@ def alogrithmus(messnummer: str, begin_index: int, high_N: int, low_N: int, bord
         sys_trashhold=sys_trashhold
     )
     return processed_signal.systolic_pressure, processed_signal.diastolic_pressure, processed_signal
-
-
 
 
 

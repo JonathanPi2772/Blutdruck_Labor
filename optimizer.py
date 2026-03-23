@@ -4,6 +4,10 @@ from optuna.trial import Trial
 from BlutdruckMesser import alogrithmus
 from Messungen.Infos import MEASUREMENT_INFORMATION
 
+# Optuna benutzen, um automatisch die besten Parameter für unseren Blutdruck-Algorithmus zu finden
+# Das bedeutet, er probiert tausende Kombinationen von Parametern, berechnet jedes Mal den Blutdruck,
+# vergleicht mit echten Referenzwerten und findet die Parameter mit dem kleinsten Fehler.
+
 def objective(trial: Trial, ground_Truth: str = "COMBINED"):
     begin_index = trial.suggest_int("begin_index", 1, 10)
     high_N = trial.suggest_int("high_N", 1, 10)
@@ -41,6 +45,7 @@ def objective(trial: Trial, ground_Truth: str = "COMBINED"):
                 sys = (n_sys + b_sys)/2
                 dia = (n_dia + b_dia)/2
 
+        # Algorithmus berechnen
         if sys is None or dia is None:
             continue
         try:
@@ -59,11 +64,13 @@ def objective(trial: Trial, ground_Truth: str = "COMBINED"):
                 dia_treshhold=dia_treshhold,
                 sys_trashhold=sys_trashhold
             )
+            # Fehler berechnen (Mean Squared Error (MSE))
             error += (calc_sys - sys)**2 + (calc_dia - dia)**2
             iterations += 1
         except Exception as e:
             return 100000.0
 
+    # Fehler mitteln
     error /= (iterations*2)
     return error
 
