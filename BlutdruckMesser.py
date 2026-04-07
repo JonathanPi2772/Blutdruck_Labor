@@ -88,9 +88,9 @@ class Signal:
 
 
 
-    def plot_data(self):
+    def plot_data(self, title: str = "Signal", filename: str = "Signal", save_plot: bool = False):
         fig, ax1 = plt.subplots()
-
+        ax1.set_title(title)
         ax1.plot(self.time, self.vCuffPressure, color="blue", label="Raw Data")
         ax1.set_xlabel("Sample Time")
         ax1.set_ylabel("Cuff Pressure", color="blue")
@@ -129,6 +129,10 @@ class Signal:
                          bbox=dict(boxstyle="round,pad=0.3", fc="lightblue", ec="k", lw=1, alpha=0.8))"""
 
         fig.tight_layout()
+        if save_plot:
+            if filename is None:
+                filename = title
+            fig.savefig(os.path.join("analyse_imgs", f"{filename}.png"), dpi=150)
         plt.show()
 
 
@@ -195,7 +199,7 @@ if __name__ == "__main__":
         dia_treshhold=0.7482381534642903,
         sys_trashhold=0.8618229257116254
     )
-    processed_signal.plot_data()
+    processed_signal.plot_data(title="P06_REST_01_191025", save_plot=True)
     print(f"Diastolic Pressure: {processed_signal.diastolic_pressure} mmHg\n"
           f"Systolic Pressure: {processed_signal.systolic_pressure} mmHg\n"
           f"MAP: {processed_signal.map_pressure} mmHg\n")

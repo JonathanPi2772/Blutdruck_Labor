@@ -84,3 +84,41 @@ MEASUREMENT_INFORMATION: dict = {
         "NAIS": (124, 75),
     }
 }
+
+
+COMBINED_BEST = {
+    "begin_index": 4,
+    "high_N": 8,
+    "low_N": 2,
+    "border_f": 1.3618632141628064,
+    "use_absolute_value": True,
+    "peaks_distance": 130,
+    "window_size": 5.6119152611238885,
+    "dia_treshhold": 0.7255318911571096,
+    "sys_trashhold": 0.8569972699918027
+}
+
+BEURER_BEST = {
+    "begin_index": 3,
+    "high_N": 2,
+    "low_N": 6,
+    "border_f": 1.1865534774567805,
+    "use_absolute_value": True,
+    "peaks_distance": 152,
+    "window_size": 5.3634623241166235,
+    "dia_treshhold": 0.6887613098188278,
+    "sys_trashhold": 0.8397497178812133
+}
+
+NAIS_BEST = {
+    "begin_index": 1,
+    "high_N": 2,
+    "low_N": 3,
+    "border_f": 1.2993508025033014,
+    "use_absolute_value": False,
+    "peaks_distance": 176,
+    "window_size": 3.7664897102734063,
+    "dia_treshhold": 0.715214015918205,
+    "sys_trashhold": 0.7684376006888789
+}
+
