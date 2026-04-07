@@ -89,7 +89,7 @@ MEASUREMENT_INFORMATION: dict = {
         "Beurer": (103, 66),
         "NAIS": (None, None),
     },
-    "S001-M001-Active": {
+    "S001-M002-Active": {
         "Beurer": (105, 73),
         "NAIS": (None, None),
     },
