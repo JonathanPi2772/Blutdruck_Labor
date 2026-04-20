@@ -1,0 +1,10 @@
+{
+    "begin_index": 1,
+    "high_N": 4,
+    "low_N": 3,
+    "border_f": 0.8863926601194747,
+    "peaks_distance": 119,
+    "window_size": 2.4992853767646452,
+    "dia_treshhold": 0.6666789300030252,
+    "sys_trashhold": 0.77238615002303
+}

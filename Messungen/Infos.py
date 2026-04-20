@@ -253,3 +253,34 @@ NAIS_BEST = {
     "sys_trashhold": 0.7684376006888789
 }
 
+BEURER_BEST_2 = {
+    "begin_index": 1,
+    "high_N": 3,
+    "low_N": 4,
+    "border_f": 0.94375886274557,
+    "peaks_distance": 121,
+    "window_size": 2.466612812214831,
+    "dia_treshhold": 0.6542622001096768,
+    "sys_trashhold": 0.7801898727356279
+}
+NAIS_BEST_2 = {
+    "begin_index": 2,
+    "high_N": 4,
+    "low_N": 3,
+    "border_f": 0.9075050584251659,
+    "peaks_distance": 119,
+    "window_size": 2.2364474023250174,
+    "dia_treshhold": 0.6712254042695495,
+    "sys_trashhold": 0.7735576100943273
+}
+COMBINED_BEST_2 = {
+    "begin_index": 1,
+    "high_N": 4,
+    "low_N": 3,
+    "border_f": 0.8863926601194747,
+    "peaks_distance": 119,
+    "window_size": 2.4992853767646452,
+    "dia_treshhold": 0.6666789300030252,
+    "sys_trashhold": 0.77238615002303
+}
+

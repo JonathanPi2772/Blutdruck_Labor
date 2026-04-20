@@ -5,3 +5,8 @@ Beste Parameter: {'begin_index': 3, 'high_N': 2, 'low_N': 1, 'border_f': 0.31126
 Optimiert auf Combined:
 Beste Parameter: {'begin_index': 1, 'high_N': 5, 'low_N': 5, 'border_f': 1.4727302354599732, 'use_absolute_value': True, 'peaks_distance': 165, 'window_size': 5.657079422588785, 'dia_treshhold': 0.794095733069117, 'sys_trashhold': 0.8626074091583769}
 
+
+
+
+Beurer Neu 200 alle Messungen
+Fertig! All-Time Beste Parameter: {'begin_index': 4, 'high_N': 6, 'low_N': 3, 'border_f': 0.9785925028881547, 'use_absolute_value': False, 'peaks_distance': 119, 'window_size': 4.703594853939489, 'dia_treshhold': 0.6994681370792104, 'sys_trashhold': 0.8877356117046057}

@@ -7,7 +7,7 @@ from BlutdruckMesser import alogrithmus
 from Messungen.Infos import MEASUREMENT_INFORMATION
 
 ground_Truth: str = "Beurer"
-run: str = "2"
+run: str = "all_measurements"
 
 def objective(trial: Trial):
     begin_index = trial.suggest_int("begin_index", 1, 5)
@@ -118,7 +118,7 @@ initial_params = {
 }
 
 study.enqueue_trial(initial_params)
-study.optimize(objective, n_trials=1000, callbacks=[save_best_callback])
+study.optimize(objective, n_trials=2000, callbacks=[save_best_callback])
 
 print(f"\nFertig! All-Time Beste Parameter: {study.best_params}")
 
