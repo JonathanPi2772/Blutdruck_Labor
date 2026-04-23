@@ -23,6 +23,7 @@
 
 % Anderes
 \usepackage[backend=bibtex, style=numeric, giveninits=true, minnames=2, maxnames=2]{biblatex}
+\addbibresource{references.bib}
 
 \usepackage{scalerel}
 \usepackage{ marvosym }
@@ -79,123 +80,182 @@ Die Aufgabe umfasst folgende Komponenten:
 
 \newpage
 \section*{Oszillometrisches Messprinzip}
+Das oszillometrische Messverfahren ist ein indirektes, nicht-invasives Verfahren zur Bestimmung des arteriellen Blutdrucks. Im Gegensatz zur auskultatorischen Methode nach Korotkow basiert es nicht auf Schallereignissen, sondern auf der Erfassung von Druckschwankungen (Oszillationen) innerhalb der Blutdruckmanschette.
+
+Während die Manschette aufgepumpt oder abgelassen wird, übertragen sich die Volumenschwankungen der Arterie, die durch den pulsierenden Blutfluss entstehen, auf die luftgefüllte Manschette. Diese Oszillationen beginnen, sobald der Manschettendruck den systolischen Wert unterschreitet (bzw. bei Inflation diesen erreicht), nehmen bei sinkendem Druck zu, erreichen ein Maximum beim mittleren arteriellen Druck (MAP) und nehmen danach wieder ab \cite{Future}.
+
+Die wesentlichen Vorteile dieses Verfahrens liegen in der einfachen Automatisierbarkeit und der Unempfindlichkeit gegenüber Umgebungsgeräuschen. Allerdings handelt es sich um eine schätzende Methode: Während der MAP physiologisch mit dem Maximum der Oszillationen korreliert, müssen Systole und Diastole über empirisch ermittelte Amplitudenverhältnisse (Prozentwerte des Maximums) berechnet werden \cite{Automated}. Die Genauigkeit der Messung hängt daher maßgeblich von der Qualität der Signalverarbeitung und der Wahl dieser Schwellenwerte ab.
 
 \newpage
 
 \section*{Messprotokoll}
-Für diesen Versuch wurde eine Messreihe an 10 Probanden durchgeführt.
-Dabei wurde jeder Proband einmal in Ruhe gemessen und einmal im aktiven Zustand.
-Dazu wurde zuerst mit dem vom Labor zur Verfügung gestellten Blutdruckmessgerät gemessen und anschließend mit dem kommerziellen Oberarm- Blutdruckmessgerät von Beurer und zu guter letzt mit dem Hand-Blutdruckmessgerät von NAIS.\\
+Für diesen Versuch wurde eine umfassende Messreihe durchgeführt, die sich aus Daten von zwei Gruppen zusammensetzt. 
+\begin{itemize}
+    \item \textbf{Eigene Messungen:} Eine Messreihe an 10 Probanden (Proband 01-10), jeweils im Ruhe- und aktiven Zustand.
+    \item \textbf{Zusätzliche Daten:} Datensätze von den Kommilitonen Ziyi und Hanna (Proband S001-S013), ebenfalls in Ruhe und aktivem Zustand.
+\end{itemize}
+Insgesamt umfasst die Datenbasis somit 23 Probanden mit jeweils mindestens zwei Kreislaufzuständen.
 
-Für den Zustand in Ruhe, sitzt der Proband auf einem Holzstuhl und hat die Beine im 90 Grad Winkel, der Arm liegt auf dem Tisch auf und ist nicht angespannt. Es ist darauf zu achten, dass der Proband sich während der Messung nicht bewegt, nicht spricht und nicht den Arm anspannt.\\
+Für unsere eigene Messreihe wurde jeder Proband einmal in Ruhe gemessen und einmal im aktiven Zustand.
+Dazu wurde zuerst mit dem vom Labor zur Verfügung gestellten Blutdruckmessgerät (Labor-Prototyp) gemessen und anschließend mit den kommerziellen Referenzgeräten: dem Oberarm-Blutdruckmessgerät von Beurer und dem Handgelenk-Blutdruckmessgerät von NAIS.
 
-Für den aktiven Zustand hat der Proband zuerst eine Minute lang Hampelmänner gemacht und anschließend wurde eine Messung mit dem Labor-Blutdruckmessgerät durchgeführt. Anschließend hat der Proband 40 Sekunden lang Hampelmänner gemacht und danach wurde eine Messung mit dem 
-Oberarm- Blutdruckmessgerät von Beurer durchgeführt. Abschließend hat der Proband für weitere 40 Sekunden Hampelmänner gemacht und es wurde danach der Blutdruck mit dem Hand-Blutdruckmessgerät von NAIS gemessen.
-Der Proband hat zwischen den Messungen immer wieder Hampelmänner machen müssen, da ansonsten die Werte der Referenzgeräte verfälscht wären, da die Messungen Zeit kosten, in der der Blutdruck wieder sinkt. Aus diesem Grund erschien uns dieses Vorgehen am sinnvollsten, um den Blutdruck des Probanden auf ungefähr dem gleichen Level zu halten.\\
-Im Folgenden Kapitel sind die Ergebnisse der Messreihe für die einzelnen Probanden dargestellt.
+\subsection*{Durchführung der Zustände}
+\begin{itemize}
+    \item \textbf{Ruhezustand:} Der Proband sitzt entspannt auf einem Stuhl, die Beine stehen im 90-Grad-Winkel auf dem Boden, der Arm liegt ruhig auf dem Tisch auf. Während der Messung herrscht Stille und Bewegungslosigkeit.
+    \item \textbf{Aktiver Zustand:} Um den Blutdruck physiologisch zu steigern, wurden Belastungsintervalle eingebaut. Der Proband absolvierte zunächst eine Minute Hampelmänner, gefolgt von der Messung am Labor-Gerät. Um das Blutdruckniveau für die Referenzmessungen (Beurer und NAIS) aufrechtzuerhalten, wurden zwischen den einzelnen Gerätemessungen jeweils weitere 40 Sekunden Belastung (Hampelmänner) durchgeführt. Dieses Vorgehen stellt sicher, dass die Referenzwerte trotz der zeitlichen Verzögerung zwischen den Messungen repräsentativ für den belasteten Zustand bleiben.
+\end{itemize}
 
 \newpage
 
-\section*{Messreihe}
-Im Folgenden sind die Ergebnisse für die einzelnen Probanden für unsere Messreihe dargestellt, welche nach dem zuvor vorgestellten Messprotokoll durchgeführt wurde: \\
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c}
-\hline
-Proband & Zustand & Nr. der Messung & Datum & Blutdruck-Messgerät& Dyastolischer Druck & Systolischer Druck \\ \hline
-01 & REST & 01 & 10.08.2025 & Beurer & 62 & 104\\ \hline
-01  & REST & 01 & 10.08.2025 & NAIS & 60 & 97 \\ \hline
-01 & REST & 02 & 10.08.2025 & Beurer & 57 & 98 \\ \hline
-01 & REST & 02 & 10.08.2025 & NAIS & 55 & 106 \\ \hline
-\end{tabular}
-\caption{Messreihe mit Referenz-Blutdruckwerten}
-\label{tab:Messreihe}
-\end{table}
+\section*{Messreihe (Auszug)}
+Im Folgenden sind beispielhaft die Ergebnisse für den ersten Probanden unserer Messreihe dargestellt. Die vollständigen Tabellen aller 23 Probanden befinden sich im Anhang.
 
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-Proband & Zustand & Nr. der Messung & Datum & Blutdruck-Messgerät & Diastolischer Druck & Systolischer Druck \\ \hline
-\multirow{4}{*}{01} & \multirow{4}{*}{REST} & \multirow{2}{*}{01} & 10.08.2025 & Beurer & 62 & 104 \\ \cline{3-7}
-& & & 10.08.2025 & NAIS   & 60 & 97 \\ \cline{3-7}
-& & 02 & 10.08.2025 & Beurer & 57 & 98 \\ \cline{3-7}
-& & 02 & 10.08.2025 & NAIS   & 55 & 106 \\ \hline
-\end{tabular}
-\caption{Messreihe mit Referenz-Blutdruckwerten}
-\label{tab:Messreihe}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
-\hline
-Proband & Zustand & Nr. der Messung & Datum & Blutdruck-Messgerät & Diastolischer Druck & Systolischer Druck \\ \hline
+Proband & Zustand & Nr. & Datum & Gerät & Diastolisch [mmHg] & Systolisch [mmHg] \\ \hline
 \multirow{4}{*}{01} & \multirow{4}{*}{REST} & \multirow{2}{*}{01} & 10.08.2025 & Beurer & 62 & 104 \\ \cline{4-7}
                     &                     &                     & 10.08.2025 & NAIS   & 60 & 97 \\ \cline{3-7}
                     &                     & \multirow{2}{*}{02} & 10.08.2025 & Beurer & 57 & 98 \\ \cline{4-7}
                     &                     &                     & 10.08.2025 & NAIS   & 55 & 106 \\ \hline
 \end{tabular}
-\caption{Messreihe mit Referenz-Blutdruckwerten}
-\label{tab:Messreihe}
+\caption{Auszug aus der Messreihe mit Referenz-Blutdruckwerten (Proband 01)}
+\label{tab:Messreihe_Beispiel}
 \end{table}
-
 
 \newpage
 
 \section*{Extraktion, Weiterverarbeitung und Vermessung des oszillometrischen Signals}
 
-In Abbildung ... ist die Auswertung des Signals von Patient x im Zustand REST dargestellt.
-Dabei stellt die blaue Kurve das Original-Siganl dar, bei der grünen Kurve handelt es sich um die Druckanstiegsrampe, diese wird durch eine Tiefpass-Filterung aus dem Original-Signal gewonnen. 
-Die rote Kurve, das oszillierende Signal, ergibt sich durch eine Hochpass-Filterung aus dem Original-Signal. Anschließend wird über alle Peaks des oszillierenden Signals (rote Kurve) die orangene Kurve gebildet. 
-Im letzten Schritt wird das orangene Signal geglättet und man erhält damit das schwarze Signal.
-AUf dem schwarzen Signal wird der höchste Punkt bestimmt (schwarzer Punkt), und von diesem ausgehend wird der diastolische und systolische Druck bei jeweils 55 und 75 vom Maximalwert bestimmt. Die Prozentangaben, bei welchen der diastolische und systolische Druck bestimmt wird, werden im nächsten Kapitel durch eine Parameter-Optimierung mithilfe der Referenzwerte verbessert und angepasst.
+Die Extraktion der blutdruckrelevanten Informationen aus dem rohen Drucksignal erfolgt in mehreren Schritten. Da das gemessene Signal sowohl den statischen Manschettendruck (Rampe) als auch die kleinen oszillometrischen Druckschwankungen (Pulse) enthält, müssen diese zunächst getrennt werden.
 
-//
-Grafik
-Grafik 2
-Grafik 3
-\\
-
-Legende:
+\subsection*{Signalvorverarbeitung und Filterung}
+Zur Trennung der Signalanteile wird ein Butterworth-Filter verwendet, da dieser einen möglichst flachen Frequenzgang im Durchlassbereich aufweist. 
 \begin{itemize}
-    \item Kurven
-    \begin{itemize}
-        \item blau: Original-Signal
-        \item grün: Druckanstiegsrampe
-        \item rot: oszillierendes Signal
-        \item orange: Einhüllende
-        \item schwarz: geglättetes Signal
-    \end{itemize}
-    \item Punkte
-        \begin{itemize}
-        \item schwarz: Maximaler Wert
-        \item blau: diastolischer Wert (hier bei 55 des Maximalwerts)
-        \item grün: systolischer Wert (hier bei 75 des Maximalwerts)
-    \end{itemize}
-    
+    \item \textbf{Druckrampe (Statik):} Durch einen Tiefpassfilter (2. bis 4. Ordnung, Grenzfrequenz $f_c \approx 1,0$ Hz) wird der hochfrequente Pulsanteil entfernt, sodass der mittlere Manschettendruckverlauf extrahiert wird.
+    \item \textbf{Oszillationen (Dynamik):} Ein Hochpassfilter (gleicher Ordnung und Grenzfrequenz) isoliert die oszillometrischen Wellenformen vom statischen Druck. Dieser Schritt ist essenziell, um die Amplituden der Pulse unabhängig vom absoluten Druckniveau analysieren zu können.
 \end{itemize}
+
+\subsection*{Hüllkurvenbestimmung mittels PCHIP-Interpolation}
+Um die Einhüllende der Oszillationen zu bestimmen, wird ein Peak-Detection-Algorithmus auf das hochpassgefilterte Signal angewendet. Die Identifikation der Maxima erfolgt unter Berücksichtigung eines Mindestabstands (\textit{peaks\_distance}), um Artefakte und Mehrfachdetektionen innerhalb eines Herzschlags zu vermeiden.
+
+Anstelle einer einfachen linearen Verbindung oder herkömmlicher kubischer Splines wird zur Interpolation der Einhüllenden die \textbf{Piecewise Cubic Hermite Interpolating Polynomial (PCHIP)} Methode verwendet. Während klassische Splines zur globalen Glattheit neigen und dabei oft \q{Überschwinger} (künstliche Oszillationen zwischen den Stützstellen) erzeugen, ist PCHIP form- und monotonieerhaltend. Dies ist für die oszillometrische Auswertung entscheidend, da künstliche Maxima zwischen den Pulsen die Bestimmung der Schwellenwerte verfälschen würden.
+
+Die theoretische Grundlage für die Verwendung von Amplitudenverhältnissen auf dieser so gewonnenen Hüllkurve (MAA-Prinzip) wird in der Literatur, insbesondere bei Geddes et al. \cite{Formulas}, ausführlich beschrieben. Die Wahl von PCHIP stellt hierbei die moderne numerische Umsetzung dar, um die von Geddes postulierten Verhältnisse präzise auf die diskreten Messpunkte anzuwenden.
+
+Zusätzlich wird die so gewonnene Hüllkurve durch einen gleitenden Mittelwert (\textit{Moving Average}) geglättet, um Rauschen zu minimieren und eine stabile Bestimmung des Maximums zu ermöglichen. Die Fensterbreite (\textit{window\_size}) wird dabei so gewählt, dass sie in etwa zwei bis drei Herzzyklen entspricht.
+
+\subsection*{Maximum Amplitude Algorithm (MAA)}
+Die Schätzung des systolischen und diastolischen Blutdrucks basiert auf dem weit verbreiteten \textit{Maximum Amplitude Algorithm} (MAA). Dabei wird davon ausgegangen, dass das Maximum der Hüllkurve dem mittleren arteriellen Druck (MAP) entspricht \cite{Automated}.
+\begin{itemize}
+    \item \textbf{MAP:} Manschettendruck am Zeitpunkt der maximalen Oszillationsamplitude.
+    \item \textbf{Systole ($P_{sys}$):} Druckwert auf der abfallenden Flanke der Hüllkurve (bei Inflation), an dem die Amplitude einen bestimmten Bruchteil des Maximums unterschreitet (z.B. 75\%).
+    \item \textbf{Diastole ($P_{dia}$):} Druckwert auf der ansteigenden Flanke der Hüllkurve, an dem die Amplitude einen bestimmten Bruchteil des Maximums erreicht (z.B. 55\%).
+\end{itemize}
+Da diese Schwellenwerte (\textit{Thresholds}) stark von der Manschettengeometrie und der individuellen Gefäßsteifigkeit abhängen können, wurden sie im Rahmen dieses Versuchs durch eine automatische Parameteroptimierung verfeinert.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/extraktion-beispiel.png}
+    \caption{Signalverarbeitungsschritte: Originalsignal (blau), Druckrampe (grün), oszillometrisches Signal (rot), PCHIP-Hüllkurve (orange) und geglättete Kurve (schwarz) mit markierten MAP, Systole und Diastole.}
+    \label{fig:signal-processing}
+\end{figure}
 
 \newpage
 
 \section*{Bestimmung der Übereinstimmung mit den Referenzwerten}
-Im Folgenden findet der Vergleich der Blutdruckmesswerte zwischen dem Labor-Blutdruckmessgerät und den beiden kommerziellen Blutdruckmessgeräten statt. 
-Wir haben dabei eine Parameter-Optimierung für unseren Algorithmus durchgeführt, indem wir automatisch die besten Werte für 10 vorgegebene Parameter gefunden haben.
-Wir haben die Parameter-Optimierung dreimal durchgeführt und zwar für folgende Situationen:
+Um die Genauigkeit des Algorithmus zu maximieren, wurde ein systematischer Ansatz zur Parameterwahl gewählt. Da der Algorithmus insgesamt neun einstellbare Parameter besitzt (Filterordnungen, Grenzfrequenzen, Glättungsfenster und MAA-Schwellenwerte), wurde eine automatisierte Suche im Parameterraum durchgeführt.
 
-\begin{itemize}
-    \item Parameter Optimierung zu Referenzgerät Beurer
-    \item Parameter Optimierung zu Referenzgerät NAIS
-    \item Kombinierte Parameter Optimierung zu Referenzgeräten Beurer und NAIS
-\end{itemize}
+\subsection*{Optimierung mit Optuna}
+Hierfür wurde das Framework \textit{Optuna} verwendet, welches mittels \textit{Tree-structured Parzen Estimator} (TPE) effizient das globale Optimum findet. Als Zielfunktion (\textit{Objective Function}) wurde eine Kombination aus dem mittleren absoluten Fehler (MAE) und der Standardabweichung der Fehler (SD) gegenüber den Referenzgeräten (Beurer und NAIS) minimiert:
+\[ \text{Loss} = \text{MAE} + 2 \cdot \text{SD} \]
+Die starke Gewichtung der Standardabweichung stellt sicher, dass der Algorithmus nicht nur im Durchschnitt korrekt ist, sondern eine hohe Konsistenz über verschiedene Probanden und Kreislaufzustände hinweg aufweist.
 
-Wir haben dabei folgende Ergebnisse erzielt:
+\subsection*{Einbeziehung zusätzlicher Messdaten}
+Zusätzlich zu unseren eigenen 10 Messreihen wurden die Datensätze der Kommilitonen Ziyi und Hanna in die Analyse einbezogen. Dies erhöht die statistische Signifikanz und erlaubt eine robustere Validierung des Algorithmus an einer größeren Diversität von Signalqualitäten und physiologischen Profilen.
+
+\subsection*{Optimierungsergebnisse}
+Die automatische Suche mittels Optuna lieferte für die verschiedenen Referenzszenarien unterschiedliche Parametersätze. In Tabelle \ref{tab:parameter-ergebnisse} sind die finalen Werte zusammengefasst, die für die weiteren Auswertungen und die Erstellung des Anhangs verwendet wurden.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Kombiniert} & \textbf{Beurer} & \textbf{NAIS} \\ \hline
+$begin\_index$ [s] & 1 & 1 & 2 \\ \hline
+$high\_N$ (HP-Ordnung) & 4 & 3 & 4 \\ \hline
+$low\_N$ (TP-Ordnung) & 3 & 4 & 3 \\ \hline
+$border\_f$ (Grenzfrequenz) [Hz] & 0,89 & 0,94 & 0,91 \\ \hline
+$peaks\_distance$ [Samples] & 119 & 121 & 119 \\ \hline
+$window\_size$ [s] & 2,50 & 2,47 & 2,24 \\ \hline
+$dia\_treshhold$ (MAA Ratio) & 0,67 & 0,65 & 0,67 \\ \hline
+$sys\_trashhold$ (MAA Ratio) & 0,77 & 0,78 & 0,77 \\ \hline
+\end{tabular}
+\caption{Finale optimierte Parameter für die drei verschiedenen Referenz-Szenarien.}
+\label{tab:parameter-ergebnisse}
+\end{table}
+
+\subsection*{Statistische Auswertung (Bland-Altman)}
+Die Übereinstimmung zwischen dem entwickelten Algorithmus und den kommerziellen Referenzgeräten wurde mittels Bland-Altman-Diagrammen visualisiert. Diese Methode erlaubt es, systematische Messabweichungen (\textit{Bias}) sowie die Grenzen der Übereinstimmung (\textit{Limits of Agreement}, $\pm 1.96 \cdot \text{SD}$) direkt abzulesen \cite{Statistical}.
+
+Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenario die Übereinstimmung analysiert:
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-sys.png}
+        \caption{Systole (Kombinierte Optimierung)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-dia.png}
+        \caption{Diastole (Kombinierte Optimierung)}
+    \end{subfigure}
+    \caption{Bland-Altman-Plots: Algorithmus (kombiniert optimiert) vs. Mittelwert der Referenzgeräte.}
+    \label{fig:bland-altman-combined}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-beurer-sys.png}
+        \caption{Systole (Beurer Optimierung)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-beurer-dia.png}
+        \caption{Diastole (Beurer Optimierung)}
+    \end{subfigure}
+    \caption{Bland-Altman-Plots: Algorithmus (Beurer optimiert) vs. Referenzgerät Beurer.}
+    \label{fig:bland-altman-beurer}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-nais-sys.png}
+        \caption{Systole (NAIS Optimierung)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{images/bland-altman-nais-dia.png}
+        \caption{Diastole (NAIS Optimierung)}
+    \end{subfigure}
+    \caption{Bland-Altman-Plots: Algorithmus (NAIS optimiert) vs. Referenzgerät NAIS.}
+    \label{fig:bland-altman-nais}
+\end{figure}
 
 
 
 \newpage
 
+\input{appendix.tex}
+
+\newpage
+
 \section*{Empfindlichkeit gegenüber Signalstörungen}
-   
+
+\printbibliography
+
 \end{document}
