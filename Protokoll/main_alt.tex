@@ -1,0 +1,290 @@
+\documentclass[a4paper, 11pt]{scrartcl}
+% Sprachliches
+\usepackage[utf8]{inputenc} 		% UTF8 für Umlaute (für PdfTeX)
+\usepackage[T1]{fontenc}
+\usepackage{float}			% Worttrennung für Wörter mit Umlauten (für PdfTeX)
+\usepackage{subcaption}
+\usepackage[normalem]{ulem} % Durchstreichen
+\usepackage{rotating}
+\usepackage[colorlinks=false]{hyperref} % Verlinkungen im Text
+\usepackage[ngerman]{babel}
+% Schriftart
+\usepackage{mathptmx} 				% Times new roman (für PdfTeX)
+\setkomafont{sectioning}{\bfseries} % Times new roman für Überschriften (für PdfTeX)
+% Mathe und Standards
+\usepackage{amsmath} 				% Mathematik 
+\usepackage{amsfonts}				% Mathesymbole
+\usepackage{amssymb}				% Mathesymbole
+
+\usepackage{xcolor} 				% Textfarben
+\usepackage{graphicx} 				% Bilder einfügen                  % Den Bildern sagen wo sie hinsollen
+% Formatierung und Verwaltung 
+\usepackage[left=2.25cm, right=2.25cm, top=2.5cm, bottom=2.5cm]{geometry} % Abstände zu Seitenrändern 
+
+% Anderes
+\usepackage[backend=bibtex, style=numeric, giveninits=true, minnames=2, maxnames=2]{biblatex}
+
+\usepackage{scalerel}
+\usepackage{ marvosym }
+\renewcommand{\labelitemiii}{{\Large\MVRightarrow}}
+
+\setlength{\parindent}{0pt} 		% automatischer Indent nach 
+% neue commands
+\newcommand{\q}[1]{\glqq#1\grqq{}} % Nutze \q{text} um etwas in deutsche Anführungszeichen zu setzen.
+\newcommand{\question}[1]{\par\vspace{0.5em}\noindent\textbf{#1}\par\vspace{0.2em}}
+\setlength{\parindent}{0pt}     % No indentation for new paragraphs
+\setlength{\parskip}{0.5em}  
+
+\usepackage{multirow} % für zusammengeführte Zeilen
+
+\geometry{margin=2.5cm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%\maketitle
+
+% Begin Deckblatt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+{\LARGE \bfseries Oszillometrische Bestimmung des Blutdrucks }\\[6pt]
+\rule{\linewidth}{0.4pt}
+\phantom{hi} \\[-4pt]
+{\Large \bfseries Praktikum Diagnose- und Therapiesysteme} \\[8pt] 
+\rule{\linewidth}{0.4pt}
+\phantom{hi} \\[-4pt]
+{\large von Bianca Kaiser und Jonathan Pareja Carrillo} \\[4pt]
+{\large Aufgabe V16 vom 22.09.2025}
+\end{center}
+\vspace{5pt}
+
+% End Deckblatt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\newpage
+
+\section*{Aufgabenbeschreibung}
+
+Die Aufgabe umfasst folgende Komponenten:
+\begin{itemize}
+    \item Einarbeitung in das Messprinzip anhand der zur Verfügung gestellten Literatur und ggf. eigener weiterer Recherchen
+    \item Erhebung einer Messreihe von oszillometrischen Signalverläufen an mehreren Probanden in verschiedenen Kreislauf-Zuständen \\ Referenzwerte werden dabei mit weiteren kommerziellen Blutdruck-Geräten ermittelt, die im Labor zur Verfügung stehen
+    \item Auswahl/Entwicklung und Implementierung eines Algorithmus zur Extraktion der oszillometrischen Wellenform aus dem gemessenen Druckverlauf
+    \item Auswahl/Entwicklung und Implementierung eines Algorithmus zur Schätzung von systolischem und diastolischem Blutdruck aus der oszillometrischen Wellenform
+    \item Vergleich der vom eigenen Algorithmus bestimmten Blutdruck-Werte mit den Referenzwerten
+    \item Untersuchung der Auswirkung von Störeinflüssen
+    \item Anfertigung eines Protokolls, das die durchgeführten Schritte dokumentiert und die Übereinstimmung der ermittelten Blutdruckwerte mit den Referenzwerten vergleicht und bewertet. 
+\end{itemize}
+
+
+
+
+
+\newpage
+\section*{Oszillometrisches Messprinzip}
+
+\newpage
+
+\section*{Messprotokoll}
+Für diesen Versuch wurde eine Messreihe an 10 Probanden durchgeführt.
+Dabei wurde jeder Proband einmal in Ruhe gemessen und einmal im aktiven Zustand.
+Dazu wurde zuerst mit dem vom Labor zur Verfügung gestellten Blutdruckmessgerät gemessen und anschließend mit dem kommerziellen Oberarm- Blutdruckmessgerät von Beurer und zu guter letzt mit dem Hand-Blutdruckmessgerät von NAIS.\\
+
+Für den Zustand in Ruhe, sitzt der Proband auf einem Holzstuhl und hat die Beine im 90 Grad Winkel, der Arm liegt auf dem Tisch auf und ist nicht angespannt. Es ist darauf zu achten, dass der Proband sich während der Messung nicht bewegt, nicht spricht und nicht den Arm anspannt.\\
+
+Für den aktiven Zustand hat der Proband zuerst eine Minute lang Hampelmänner gemacht und anschließend wurde eine Messung mit dem Labor-Blutdruckmessgerät durchgeführt. Anschließend hat der Proband 40 Sekunden lang Hampelmänner gemacht und danach wurde eine Messung mit dem 
+Oberarm- Blutdruckmessgerät von Beurer durchgeführt. Abschließend hat der Proband für weitere 40 Sekunden Hampelmänner gemacht und es wurde danach der Blutdruck mit dem Hand-Blutdruckmessgerät von NAIS gemessen.
+Der Proband hat zwischen den Messungen immer wieder Hampelmänner machen müssen, da ansonsten die Werte der Referenzgeräte verfälscht wären, da die Messungen Zeit kosten, in der der Blutdruck wieder sinkt. Aus diesem Grund erschien uns dieses Vorgehen am sinnvollsten, um den Blutdruck des Probanden auf ungefähr dem gleichen Level zu halten.\\
+Im Folgenden Kapitel sind die Ergebnisse der Messreihe für die einzelnen Probanden dargestellt.
+
+\newpage
+
+\section*{Messreihe}
+Im Folgenden sind die Ergebnisse für die einzelnen Probanden für unsere Messreihe dargestellt, welche nach dem zuvor vorgestellten Messprotokoll durchgeführt wurde: \\
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+
+\resizebox{\textwidth}{!}{%
+
+\renewcommand{\arraystretch}{1.3}
+
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+Proband & Zustand & Nr. der Messung & Datum & Blutdruck-Messgerät & Diastolischer Druck & Systolischer Druck \\
+\hline
+
+\multirow{6}{*}{01}
+& \multirow{4}{*}{REST}
+& \multirow{2}{*}{01} & 10.08.2025 & Beurer & 62 & 104 \\ \cline{4-7}
+& & & 10.08.2025 & NAIS & 60 & 97 \\ \cline{3-7}
+
+& & \multirow{2}{*}{02} & 10.08.2025 & Beurer & 57 & 98 \\ \cline{4-7}
+& & & 10.08.2025 & NAIS & 55 & 106 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 16.09.2025 & Beurer & 81 & 147 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 78 & 128 \\
+\hline
+
+
+\multirow{6}{*}{02}
+& \multirow{4}{*}{REST}
+& \multirow{2}{*}{01} & 10.08.2025 & Beurer & 70 & 111 \\ \cline{4-7}
+& & & 10.08.2025 & NAIS & -- & -- \\ \cline{3-7}
+
+& & \multirow{2}{*}{02} & 16.09.2025 & Beurer & 66 & 113 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 75 & 116 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 16.09.2025 & Beurer & 77 & 134 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 76 & 127 \\
+\hline
+
+
+\multirow{6}{*}{03}
+& \multirow{4}{*}{REST}
+& \multirow{2}{*}{01} & 10.08.2025 & Beurer & -- & -- \\ \cline{4-7}
+& & & 10.08.2025 & NAIS & 63 & 109 \\ \cline{3-7}
+
+& & \multirow{2}{*}{02} & 16.09.2025 & Beurer & 59 & 100 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 61 & 112 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{02} & 16.09.2025 & Beurer & 61 & 112 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 67 & 111 \\
+\hline
+
+
+\multirow{4}{*}{04}
+& \multirow{2}{*}{REST}
+& \multirow{2}{*}{01} & 16.09.2025 & Beurer & 68 & 101 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 71 & 114 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 16.09.2025 & Beurer & 70 & 125 \\ \cline{4-7}
+& & & 16.09.2025 & NAIS & 77 & 127 \\
+\hline
+
+
+\multirow{4}{*}{05}
+& \multirow{2}{*}{REST}
+& \multirow{2}{*}{01} & 21.09.2025 & Beurer & 68 & 122 \\ \cline{4-7}
+& & & 21.09.2025 & NAIS & 64 & 128 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 21.09.2025 & Beurer & 74 & 137 \\ \cline{4-7}
+& & & 21.09.2025 & NAIS & 70 & 160 \\
+\hline
+
+
+\multirow{4}{*}{06}
+& \multirow{2}{*}{REST}
+& \multirow{2}{*}{01} & 19.10.2025 & Beurer & 86 & 122 \\ \cline{4-7}
+& & & 19.10.2025 & NAIS & 87 & 136 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 19.10.2025 & Beurer & 64 & 141 \\ \cline{4-7}
+& & & 19.10.2025 & NAIS & 84 & 156 \\
+\hline
+
+
+\multirow{4}{*}{07}
+& \multirow{2}{*}{REST}
+& \multirow{2}{*}{01} & 19.10.2025 & Beurer & 70 & 111 \\ \cline{4-7}
+& & & 19.10.2025 & NAIS & 77 & 123 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 19.10.2025 & Beurer & 74 & 150 \\ \cline{4-7}
+& & & 19.10.2025 & NAIS & 76 & 145 \\
+\hline
+
+
+\multirow{4}{*}{08}
+& \multirow{2}{*}{REST}
+& \multirow{2}{*}{01} & 20.10.2025 & Beurer & 63 & 98 \\ \cline{4-7}
+& & & 20.10.2025 & NAIS & 69 & 108 \\ \cline{2-7}
+
+& \multirow{2}{*}{ACTIV}
+& \multirow{2}{*}{01} & 20.10.2025 & Beurer & 64 & 124 \\ \cline{4-7}
+& & & 20.10.2025 & NAIS & 75 & 124 \\
+\hline
+
+\end{tabular}
+
+}
+
+\caption{Messreihe mit Referenz-Blutdruckwerten aller Probanden}
+\label{tab:Messreihe_gesamt}
+
+\end{table}
+
+Zusätzlich wurden an Proband Nr. 8 Messungen im Ruhezustand mit Störeffekten aufgenommen:
+
+\begin{itemize}
+    \item Beine über Kreuz und Manschette verdreht (P08_REST_02_201025)
+    \item Bewegen von beiden Armen (P08_REST_03_201025)
+    \item Mit beiden Beinen stampfen (P08_REST_04_201025)
+\end{itemize}
+
+
+
+\newpage
+
+\section*{Extraktion, Weiterverarbeitung und Vermessung des oszillometrischen Signals}
+
+In Abbildung ... ist die Auswertung des Signals von Patient x im Zustand REST dargestellt.
+Dabei stellt die blaue Kurve das Original-Siganl dar, bei der grünen Kurve handelt es sich um die Druckanstiegsrampe, diese wird durch eine Tiefpass-Filterung aus dem Original-Signal gewonnen. 
+Die rote Kurve, das oszillierende Signal, ergibt sich durch eine Hochpass-Filterung aus dem Original-Signal. Anschließend wird über alle Peaks des oszillierenden Signals (rote Kurve) die orangene Kurve gebildet. 
+Im letzten Schritt wird das orangene Signal geglättet und man erhält damit das schwarze Signal.
+AUf dem schwarzen Signal wird der höchste Punkt bestimmt (schwarzer Punkt), und von diesem ausgehend wird der diastolische und systolische Druck bei jeweils 55 und 75 vom Maximalwert bestimmt. Die Prozentangaben, bei welchen der diastolische und systolische Druck bestimmt wird, werden im nächsten Kapitel durch eine Parameter-Optimierung mithilfe der Referenzwerte verbessert und angepasst.
+
+//
+Grafik
+Grafik 2
+Grafik 3
+\\
+
+Legende:
+\begin{itemize}
+    \item Kurven
+    \begin{itemize}
+        \item blau: Original-Signal
+        \item grün: Druckanstiegsrampe
+        \item rot: oszillierendes Signal
+        \item orange: Einhüllende
+        \item schwarz: geglättetes Signal
+    \end{itemize}
+    \item Punkte
+        \begin{itemize}
+        \item schwarz: Maximaler Wert
+        \item blau: diastolischer Wert (hier bei 55 des Maximalwerts)
+        \item grün: systolischer Wert (hier bei 75 des Maximalwerts)
+    \end{itemize}
+    
+\end{itemize}
+
+\newpage
+
+\section*{Bestimmung der Übereinstimmung mit den Referenzwerten}
+Im Folgenden findet der Vergleich der Blutdruckmesswerte zwischen dem Labor-Blutdruckmessgerät und den beiden kommerziellen Blutdruckmessgeräten statt. 
+Wir haben dabei eine Parameter-Optimierung für unseren Algorithmus durchgeführt, indem wir automatisch die besten Werte für 10 vorgegebene Parameter gefunden haben.
+Wir haben die Parameter-Optimierung dreimal durchgeführt und zwar für folgende Situationen:
+
+\begin{itemize}
+    \item Parameter Optimierung zu Referenzgerät Beurer
+    \item Parameter Optimierung zu Referenzgerät NAIS
+    \item Kombinierte Parameter Optimierung zu Referenzgeräten Beurer und NAIS
+\end{itemize}
+
+Wir haben dabei folgende Ergebnisse erzielt:
+
+
+
+\newpage
+
+\section*{Empfindlichkeit gegenüber Signalstörungen}
+   
+\end{document}
