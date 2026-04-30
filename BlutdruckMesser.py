@@ -52,14 +52,14 @@ class Signal:
 
     def get_hüllenfunktion(self, peaks_distance: int = 150, window_size: float = 1.5):
         if self.ramp is not None and self.oscillations is not None:
-            # Nutze die rohen Oszillationen für Maxima (keine Frequenzverdopplung durch abs())
+            # Rohen Oszillationen für Maxima
             peaks, _ = find_peaks(x=self.oscillations, distance=peaks_distance)
             
             if len(peaks) < 3:
                 # Fallback auf Absolutwert nur wenn nötig
                 peaks, _ = find_peaks(x=np.abs(self.oscillations), distance=peaks_distance//2)
 
-            # Pchip erzeugt keine künstlichen schwingungen zwischen den Stützstellen
+            # PCHIP
             x_range = np.arange(len(self.oscillations))
             self.envelope = pchip_interpolate(peaks, self.oscillations[peaks], x_range)
             
@@ -77,7 +77,7 @@ class Signal:
         map_max_amp = self.smoothed_envelope[self.map_index]
         self.map_pressure = self.ramp[self.map_index]
 
-        # Inflation: Diastole liegt zeitlich VOR MAP (bei niedrigerem Manschettendruck)
+        # Inflation: Diastole liegt zeitlich VOR MAP
         rising_edge = self.smoothed_envelope[:self.map_index]
         if len(rising_edge) > 0:
             self.diastolic_index = np.argmin(np.abs(rising_edge - (map_max_amp * dia_treshhold)))
@@ -85,7 +85,7 @@ class Signal:
         else:
             self.diastolic_pressure = 0
 
-        # Inflation: Systole liegt zeitlich NACH MAP (bei höherem Manschettendruck)
+        # Inflation: Systole liegt zeitlich NACH MAP
         falling_edge = self.smoothed_envelope[self.map_index:]
         if len(falling_edge) > 0:
             self.systolic_index = self.map_index + np.argmin(np.abs(falling_edge - (map_max_amp * sys_trashhold)))
@@ -96,20 +96,20 @@ class Signal:
     def plot_data(self, title: str = "Signal", filename: str = "Signal", save_plot: bool = False, ref_sys: float = None, ref_dia: float = None, messnummer: str = ""):
         fig = go.Figure()
 
-        # Color based on measurement type
+        # Verschiedene Farben zwischen Messreihen
         is_p = messnummer.startswith("P")
         raw_color = 'rgba(0, 100, 255, 0.5)' if is_p else 'rgba(255, 100, 0, 0.5)'
         group_label = "Eigene Messung (P)" if is_p else "Messung Ziyi/Hanna (S)"
 
-        # Cuff Pressure (Ramp & Raw)
+        # Manschettendruck Raw (Rampe unsichtbar)
         fig.add_trace(go.Scatter(x=self.time, y=self.vCuffPressure, name=f"Raw Data ({group_label})", line=dict(color=raw_color, width=2)))
         # fig.add_trace(go.Scatter(x=self.time, y=self.ramp, name="Ramp (Cuff Pressure)", line=dict(color='grey', width=2)))
 
-        # Oscillations & Envelope (Secondary Y-Axis)
+        # Oszillationen & Hüllenkurve (Zweite Y-Achse)
         fig.add_trace(go.Scatter(x=self.time, y=self.oscillations, name="Oscillations", line=dict(color='red', width=2), opacity=0.3, yaxis="y2"))
         fig.add_trace(go.Scatter(x=self.time, y=self.smoothed_envelope, name="Smoothed Envelope", line=dict(color='black', width=1), yaxis="y2"))
 
-        # Calculated Values
+        # Berechneten Werte
         if self.map_pressure:
             # MAP
             fig.add_trace(go.Scatter(x=[self.map_time], y=[self.map_pressure], mode='markers+text', 
@@ -130,7 +130,7 @@ class Signal:
                                      textposition="top center", marker=dict(color='green', size=10, symbol='diamond')))
             fig.add_vline(x=sys_time, line=dict(color='green', width=1, dash='dot'), opacity=0.5)
 
-        # Ground Truth (Reference)
+        # Referenz
         if ref_sys is not None:
             idx_sys = np.argmin(np.abs(self.ramp - ref_sys))
             ref_time_sys = self.time[idx_sys]
@@ -176,14 +176,15 @@ class Signal:
                 os.makedirs("Protokoll/images")
             full_path = f"Protokoll/images/{filename}.png"
             fig.write_image(full_path, engine="kaleido", scale=2)
-            # print(f"Plot saved to {full_path}")
+        return fig
+
 
 def load_data(file_name: str):
     file_path = os.path.join("Messungen", f"{file_name}.mat")
     data = scipy.io.loadmat(file_path)
     return data["vSampleTime"][0], data["vCuffPressure"][0]
 
-def alogrithmus_optimized(messnummer, begin_index, high_N, low_N, border_f, peaks_distance, window_size, dia_treshhold, sys_trashhold):
+def alogrithmus(messnummer, begin_index, high_N, low_N, border_f, peaks_distance, window_size, dia_treshhold, sys_trashhold):
     time, press = load_data(messnummer)
     sig = Signal(time, press)
     proc = sig.extracting_ramp(begin_index, high_N, low_N, border_f)

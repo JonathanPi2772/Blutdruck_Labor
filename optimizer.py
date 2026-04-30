@@ -2,7 +2,7 @@ import json
 import numpy as np
 import optuna
 from optuna.trial import Trial
-from BlutdruckMesser_optimized import alogrithmus_optimized
+from BlutdruckMesser import alogrithmus
 from Messungen.Infos import MEASUREMENT_INFORMATION
 
 ground_Truth = "NAIS"
@@ -15,7 +15,7 @@ def objective(trial: Trial):
     border_f = trial.suggest_float("border_f", 0.6, 1.2)
     peaks_distance = trial.suggest_int("peaks_distance", 100, 250)
     
-    # Begrenzte Fenstergröße gegen Signal-Verwässerung
+    # Begrenzte Fenstergröße gegen Signal-Over-Smooting
     window_size = trial.suggest_float("window_size", 0.8, 2.5)
     
     # Klassische MAA Schwellwerte
@@ -40,7 +40,7 @@ def objective(trial: Trial):
         if ref_sys is None: continue
 
         try:
-            calc_sys, calc_dia, sig = alogrithmus_optimized(
+            calc_sys, calc_dia, sig = alogrithmus(
                 messnummer, begin_index, high_N, low_N, border_f, 
                 peaks_distance, window_size, dia_treshhold, sys_trashhold
             )
