@@ -367,7 +367,72 @@ Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenari
 
 
 \newpage
-\section{Interpretation}
+\section{Ergebnisse und Interpretation}
+
+Die statistische Analyse der Ergebnisse zeigt eine gute Übereinstimmung des entwickelten Algorithmus mit den Referenzmessgeräten, wobei jedoch die Wahl der Optimierungsparameter einen signifikanten Einfluss auf die Genauigkeit hat.
+\subsection{Genauigkeit und Bias}
+Wie in den Bland-Altman-Plots (Abbildung \ref{fig:bland-altman-combined} bis \ref{fig:bland-altman-nais}) ersichtlich ist, liegt der systematische Fehler (\textit{Bias}) für die kombinierte Optimierung bei ca. 1,87 mmHg für die Systole und -0,10 mmHg für die Diastole. Dies deutet darauf hin, dass der Algorithmus im Mittel sehr nah an den Referenzwerten liegt und keine starke systematische Über- oder Unterschätzung vornimmt. 
+
+\subsection{Subgruppen-Analyse: Vergleich der Messreihen P und S}
+Ein wesentlicher Teil der Validierung war der Vergleich zwischen den beiden Messreihen \textit{P} (eigene Messungen) und \textit{S} (Messungen der Gruppe Ziyi/Hanna). Obwohl beide Gruppen die gleichen Referenzgeräte verwendeten, zeigen die Daten signifikante systematische Unterschiede (siehe Tabelle \ref{tab:subgruppen}).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Messreihe} & \textbf{Bias Sys} & \textbf{MAE Sys} & \textbf{Bias Dia} & \textbf{MAE Dia} \\ \hline
+Gruppe P (n=19) & -3,13 mmHg & 6,03 mmHg & 0,88 mmHg & 4,79 mmHg \\ \hline
+Gruppe S (n=26) & 5,52 mmHg & 9,30 mmHg & -0,82 mmHg & 5,77 mmHg \\ \hline
+\end{tabular}
+\caption{Vergleich der Genauigkeit (Bias und Mean Absolute Error) zwischen den Messreihen P und S.}
+\label{tab:subgruppen}
+\end{table}
+
+Auffallend ist der \q{Bias-Shift} bei der Systole: Während der Algorithmus bei Gruppe P die Systole leicht unterschätzt, wird sie bei Gruppe S um durchschnittlich 5,5 mmHg überschätzt. Auch der mittlere absolute Fehler (MAE) ist bei Gruppe S mit 9,3 mmHg deutlich höher als bei Gruppe P (6,0 mmHg).
+
+Diese Differenzen lassen sich auf zwei Hauptfaktoren zurückführen:
+\begin{enumerate}
+    \item \textbf{Druckbereich:} Die Probanden der Gruppe S wiesen tendenziell höhere Blutdruckwerte auf (bis zu 170 mmHg systolisch). In höheren Druckbereichen verändern sich die elastischen Eigenschaften der Arterienwand (Zunahme der Steifigkeit), was die Form der Oszillations-Einhüllenden und damit die empirischen Amplitudenverhältnisse (MAA-Ratios) beeinflussen kann \cite{Future}\cite{Formulas}.
+    \item \textbf{Messtechnik:} Da Gruppe S einen höheren Bias und eine größere Standardabweichung (SD = 11,0 vs. 6,7 mmHg) zeigt, ist eine variablere Manschettenapplikation oder eine höhere Anfälligkeit für Bewegungsartefakte bei diesen Messungen wahrscheinlich.
+\end{enumerate}
+
+Die Tatsache, dass die Diastole in beiden Gruppen stabil bei einem MAE von ca. 5 mmHg liegt, spricht für die Robustheit des gewählten diastolischen Schwellenwerts.
+
+Zusätzlich zeigt die gerätespezifische Auswertung (siehe Abbildung \ref{fig:bland-altman-beurer} und \ref{fig:bland-altman-nais}), dass die Wahl des Referenzgeräts den Bias beeinflusst. Bei der Optimierung auf das \textit{Beurer}-Gerät zeigt sich ein systematischer Bias von ca. 4,6 mmHg (Systole), während die \textit{NAIS}-Optimierung zu einem negativen Bias von ca. -3,0 mmHg führt. Dies deutet eine leichte systematische Abweichung zwischen den beiden kommerziellen Referenzgeräten an.
+
+\subsection{Präzision und Streuung}
+Die Streuung der Messwerte (\textit{Limits of Agreement}) ist mit ca. $\pm 15$ bis $\pm 25$ mmHg relativ weit gefasst. Dies ist auf mehrere Faktoren zurückzuführen:
+\begin{itemize}
+    \item \textbf{Physiologische Variabilität:} Blutdruck ist keine statische Größe. Da die Referenzmessungen  zeitnah nacheinander durchgeführt wurden, können physiologische Schwankungen die Differenz erhöhen. Es ist nicht möglich die exakt selben Bedingungen immer wieder zu rekonstruieren.
+    \item \textbf{Algorithmische Grenzen:} Die Verwendung von festen Amplitudenverhältnissen (MAA-Verfahren) ist eine einfache Schätzung anhand unserer Messwerte. Professionelle Geräte könnten komplexere Filter und eventuell kurvenformabhängige Modelle nutzen, um bessere Vohersagen zu machen.
+\end{itemize}
+
+Zusammenfassend lässt sich sagen, dass der Algorithmus für eine laborbasierte Implementierung eine sehr gute Grundlage bietet und halbwegs verlässliche Werte liefert.
+
+\newpage
+
+\section{Projektstruktur und Dateiverzeichnis}
+
+Das Projekt ist in einem \href{https://github.com/JonathanPi2772/Blutdruck_Labor.git}{Git-Repository} (https://github.com/JonathanPi2772/Blutdruck\_Labor.git) organisiert. Die folgende Struktur gibt Übersicht über die wichtigsten Dateien und Ordner:
+
+\begin{itemize}
+    \item \textbf{Hauptverzeichnis:}
+    \begin{itemize}
+        \item \texttt{Analysis.ipynb}: Das zentrale Jupyter Notebook mit interaktiven Plots für die explorative Datenanalyse, Visualisierung und Auswertung.
+        \item \texttt{BlutdruckMesser.py}: Enthält die Klasse \texttt{Signal} und die Kernlogik des Algorithmus (Filterung, Extraktion der Hüllkurve, Blutdruckbestimmung).
+        \item \texttt{optimizer.py}: Skript zur automatisierten Parameter-Optimierung mittels \textit{Optuna}.
+        \item \texttt{requirements.txt}: Liste der benötigten Python-Bibliotheken.
+    \end{itemize}
+    
+    \item \textbf{Unterverzeichnisse:}
+    \begin{itemize}
+        \item \texttt{Messungen/}: Enthält alle Rohdaten im \texttt{.mat}-Format, unterteilt in eigene Messungen (P01-P08) und die Messreihe von Ziyi/Hanna (S001-S013).
+        \item \texttt{Parameters/}: Speichert die durch die Optimierung gefundenen besten Parameter-Sets als JSON-Dateien.
+        \item \texttt{Protokoll/}: Beinhaltet den LaTeX-Quellcode (\texttt{main.tex}), die Literaturdatenbank (\texttt{references.bib}) sowie den Ordner \texttt{images/} mit allen generierten Grafiken.
+        \item \texttt{html\_files/}: Exportierte Versionen der Analyse für die Ansicht im Webbrowser ohne Jupyter-Umgebung.
+        \item \texttt{Literatur/}: PDF-Dokumente der verwendeten wissenschaftlichen Quellen.
+    \end{itemize}
+\end{itemize}
 
 \newpage
 
