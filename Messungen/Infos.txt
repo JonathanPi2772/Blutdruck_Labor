@@ -6,10 +6,10 @@ P02 — Antonio - 51J
 P03 — Elena - 50J
 P04 — Marcel - 18J
 
-P05 - Lukas
-P06 - Monika
-P07 - Jürgen
-P08 - Bianca
+P05 - Lukas - 22J
+P06 - Monika - 57J
+P07 - Jürgen - 64J
+P08 - Bianca - 25J
 
 
 
