@@ -3,13 +3,13 @@ import scipy.io
 import numpy as np
 import plotly.graph_objects as go
 from BlutdruckMesser_optimized import alogrithmus_optimized as alogrithmus
-from Messungen.Infos import MEASUREMENT_INFORMATION, COMBINED_BEST_2, BEURER_BEST_2, NAIS_BEST_2
+from Messungen.Infos import MEASUREMENT_INFORMATION, COMBINED_BEST, BEURER_BEST, NAIS_BEST
 
 def generate_all_plots():
     categories = [
-        (COMBINED_BEST_2, "Combined", "combined"),
-        (BEURER_BEST_2, "Beurer", "beurer"),
-        (NAIS_BEST_2, "NAIS", "nais")
+        (COMBINED_BEST, "Combined", "combined"),
+        (BEURER_BEST, "Beurer", "beurer"),
+        (NAIS_BEST, "NAIS", "nais")
     ]
     
     if not os.path.exists("Protokoll/images"):
@@ -75,7 +75,7 @@ def generate_bland_altman_plotly():
         r_sys, r_dia = np.mean(refs), np.mean(refd)
         
         try:
-            c_sys, c_dia, _ = alogrithmus(messnummer=messnummer, **COMBINED_BEST_2)
+            c_sys, c_dia, _ = alogrithmus(messnummer=messnummer, **COMBINED_BEST)
             calc_sys_list.append(c_sys)
             ref_sys_list.append(r_sys)
             calc_dia_list.append(c_dia)
@@ -125,7 +125,7 @@ def generate_bland_altman_plotly():
         b_s, b_d = info.get("Beurer", (None, None))
         if b_s is None: continue
         try:
-            c_s, c_d, _ = alogrithmus(messnummer=m, **BEURER_BEST_2)
+            c_s, c_d, _ = alogrithmus(messnummer=m, **BEURER_BEST)
             calc_sys_b.append(c_s); ref_sys_b.append(b_s)
             calc_dia_b.append(c_d); ref_dia_b.append(b_d)
             labels_b.append(m)
@@ -141,7 +141,7 @@ def generate_bland_altman_plotly():
         n_s, n_d = info.get("NAIS", (None, None))
         if n_s is None: continue
         try:
-            c_s, c_d, _ = alogrithmus(messnummer=m, **NAIS_BEST_2)
+            c_s, c_d, _ = alogrithmus(messnummer=m, **NAIS_BEST)
             calc_sys_n.append(c_s); ref_sys_n.append(n_s)
             calc_dia_n.append(c_d); ref_dia_n.append(n_d)
             labels_n.append(m)

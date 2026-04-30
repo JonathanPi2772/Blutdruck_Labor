@@ -2,10 +2,9 @@ import os
 import scipy.io
 import numpy as np
 from numpy import ndarray
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
+from scipy.interpolate import pchip_interpolate
 from scipy.signal import butter, sosfilt, filtfilt, find_peaks
-
+import plotly.graph_objects as go
 
 class Signal:
     SAMPLING_FREQUENCY = 200 # Hz
@@ -16,7 +15,7 @@ class Signal:
         self.ramp = None
         self.envelope = None
         self.smoothed_envelope = None
-        #
+        
         self.diastolic_pressure = None
         self.diastolic_index = None
         self.systolic_pressure = None
@@ -25,182 +24,169 @@ class Signal:
         self.map_time = None
         self.map_pressure = None
 
-    def extracting_ramp(self, begin_index: int = 3, high_N: int = 8, low_N: int = 8, border_f: float = 1.0, use_absolute_value: bool = True):
-        begin_index = np.where(self.time == begin_index)[0] # After x Seconds
-        if len(begin_index) == 0:
+    def extracting_ramp(self, begin_index: int = 1, high_N: int = 3, low_N: int = 3, border_f: float = 1.0):
+        # Begrenzung der Filterordnung auf max 4 für Stabilität
+        high_N = max(1, min(high_N, 4))
+        low_N = max(1, min(low_N, 4))
+        
+        begin_indices = np.where(self.time >= begin_index)[0]
+        if len(begin_indices) == 0:
             raise Exception("Begin Index not found")
-        # Till the highest point, should be 190
-        end_index = np.where(self.vCuffPressure == np.max(self.vCuffPressure))[0]
+        
+        # Inflation endet beim maximalen Manschettendruck
+        end_index = np.argmax(self.vCuffPressure)
+        
         processed_signal = Signal(
-            sample_time=self.time[begin_index[0]:end_index[0]],
-            sample_vCuffPressure=self.vCuffPressure[begin_index[0]:end_index[0]]
+            sample_time=self.time[begin_indices[0]:end_index],
+            sample_vCuffPressure=self.vCuffPressure[begin_indices[0]:end_index]
         )
-        # Herzschlähe extrahieren. Frequenz so bei 70-160 Schlägen pro Minute
-        # Zwischen 7/6 Hz und 16/6
-        # Alles unter 1 Hz kann entfernt/gesplittet werden. Das wäre der langsame Druckanstieg
-        # Nutzung eines Hochpassfilters
 
-        # Koeffizienten des Filter
+        # Hochpassfilter für Oszillationen
         coff_b, coff_a = butter(N=high_N, Wn=border_f, btype="high", analog=False, fs=self.SAMPLING_FREQUENCY, output="ba")
-        # Filtfilt ist für med. Daten am besten. Es spiegelt an den Enden und filtert von beiden Seiten.
-        # Dadurch gibt es keine Artefakte am Anfang
         processed_signal.oscillations = filtfilt(b=coff_b, a=coff_a, x=processed_signal.vCuffPressure)
-        if use_absolute_value:
-            processed_signal.oscillations = np.abs(processed_signal.oscillations)
 
-        # Nun das was unter einem Herz ist ist der Anstieg des Drucks. Das braucht man später zur Berechnung
+        # Tiefpassfilter für die Druck-Rampe
         coff_b, coff_a  = butter(N=low_N, Wn=border_f, btype="low", analog=False, fs=self.SAMPLING_FREQUENCY, output="ba")
         processed_signal.ramp = filtfilt(b=coff_b, a=coff_a,  x=processed_signal.vCuffPressure)
         return processed_signal
 
-    def get_hüllenfunktion(self, peaks_distance:int=116, window_size:float=3.0):
+    def get_hüllenfunktion(self, peaks_distance: int = 150, window_size: float = 1.5):
         if self.ramp is not None and self.oscillations is not None:
-            # Erstmal Peaks finden mit dem Abstand von geringen 70 Schlägen pro Minute, Puffer von 0.6
-            # (7/6)*0.5*self.SAMPLING_FREQUENCY = 116
+            # Nutze die rohen Oszillationen für Maxima (keine Frequenzverdopplung durch abs())
             peaks, _ = find_peaks(x=self.oscillations, distance=peaks_distance)
-            # Interpolation zwischen den Peaks
-            interp_func = interp1d(peaks, self.oscillations[peaks], kind='cubic', fill_value="extrapolate")
-            # Hüllenkurve über das ganze Zeitsignal
-            self.envelope = interp_func(np.arange(len(self.oscillations)))
-            # Smooth mit Window Size von x Sekunden
+            
+            if len(peaks) < 3:
+                # Fallback auf Absolutwert nur wenn nötig
+                peaks, _ = find_peaks(x=np.abs(self.oscillations), distance=peaks_distance//2)
+
+            # Pchip erzeugt keine künstlichen schwingungen zwischen den Stützstellen
+            x_range = np.arange(len(self.oscillations))
+            self.envelope = pchip_interpolate(peaks, self.oscillations[peaks], x_range)
+            
+            # Glättung mit Fensterbreite in Sekunden (physiologisch sinnvoll 1-2s)
             window = int(window_size * self.SAMPLING_FREQUENCY)
+            if window % 2 == 0: window += 1
             self.smoothed_envelope = np.convolve(self.envelope, np.ones(window)/window, mode='same')
         else:
-            raise Exception("Ramp is not available, Do this only with preprocessed signal")
+            raise Exception("Ramp not available")
 
-    def get_blutdruckwerte(self, dia_treshhold: float = 0.55, sys_trashhold: float = 0.75) -> tuple[float, float]:
+    def get_blutdruckwerte(self, dia_treshhold: float = 0.6, sys_trashhold: float = 0.7):
+        # MAP ist das Maximum der geglätteten Hüllkurve
         self.map_index = np.argmax(self.smoothed_envelope)
         self.map_time = self.time[self.map_index]
-        map_relative_pressure = self.smoothed_envelope[self.map_index]
-        self.map_pressure = self.vCuffPressure[self.map_index]
+        map_max_amp = self.smoothed_envelope[self.map_index]
+        self.map_pressure = self.ramp[self.map_index]
 
-        # Dia
-        rising_edge = np.zeros_like(self.smoothed_envelope)
-        rising_edge[:self.map_index] = self.smoothed_envelope[:self.map_index]
-        self.diastolic_index = np.argmin(np.abs(rising_edge - (map_relative_pressure * dia_treshhold)))
-        self.diastolic_pressure = self.ramp[self.diastolic_index]
+        # Inflation: Diastole liegt zeitlich VOR MAP (bei niedrigerem Manschettendruck)
+        rising_edge = self.smoothed_envelope[:self.map_index]
+        if len(rising_edge) > 0:
+            self.diastolic_index = np.argmin(np.abs(rising_edge - (map_max_amp * dia_treshhold)))
+            self.diastolic_pressure = self.ramp[self.diastolic_index]
+        else:
+            self.diastolic_pressure = 0
 
-        #Systolic
-        falling_edge = np.zeros_like(self.smoothed_envelope)
-        falling_edge[self.map_index:] = self.smoothed_envelope[self.map_index:]
-        self.systolic_index = np.argmin(np.abs(falling_edge - (map_relative_pressure * sys_trashhold)))
-        self.systolic_pressure = self.ramp[self.systolic_index]
+        # Inflation: Systole liegt zeitlich NACH MAP (bei höherem Manschettendruck)
+        falling_edge = self.smoothed_envelope[self.map_index:]
+        if len(falling_edge) > 0:
+            self.systolic_index = self.map_index + np.argmin(np.abs(falling_edge - (map_max_amp * sys_trashhold)))
+            self.systolic_pressure = self.ramp[self.systolic_index]
+        else:
+            self.systolic_pressure = 0
 
+    def plot_data(self, title: str = "Signal", filename: str = "Signal", save_plot: bool = False, ref_sys: float = None, ref_dia: float = None, messnummer: str = ""):
+        fig = go.Figure()
 
+        # Color based on measurement type
+        is_p = messnummer.startswith("P")
+        raw_color = 'rgba(0, 100, 255, 0.5)' if is_p else 'rgba(255, 100, 0, 0.5)'
+        group_label = "Eigene Messung (P)" if is_p else "Messung Ziyi/Hanna (S)"
 
-    def plot_data(self, title: str = "Signal", filename: str = "Signal", save_plot: bool = False):
-        fig, ax1 = plt.subplots()
-        ax1.set_title(title)
-        ax1.plot(self.time, self.vCuffPressure, color="blue", label="Raw Data")
-        ax1.set_xlabel("Sample Time")
-        ax1.set_ylabel("Cuff Pressure", color="blue")
-        if self.ramp is not None:
-            ax1.plot(self.time, self.ramp, color="green", label="Ramp")
-        ax1.tick_params(axis='y', labelcolor="blue")
-        if self.oscillations is not None:
-            ax2 = ax1.twinx()
-            ax2.set_ylabel('Oscillations', color="red")
-            ax2.plot(self.time, self.oscillations, color="red", label="Oscillations")
-            if self.envelope is not None:
-                ax2.plot(self.time, self.envelope, color="orange", label="Envelope")
-                ax2.plot(self.time, self.smoothed_envelope, color="black", label="Smoothed Envelope")
-            ax2.tick_params(axis='y', labelcolor="red")
+        # Cuff Pressure (Ramp & Raw)
+        fig.add_trace(go.Scatter(x=self.time, y=self.vCuffPressure, name=f"Raw Data ({group_label})", line=dict(color=raw_color, width=2)))
+        # fig.add_trace(go.Scatter(x=self.time, y=self.ramp, name="Ramp (Cuff Pressure)", line=dict(color='grey', width=2)))
 
-        if self.map_pressure is not None:
-            ax2.plot(self.map_time, self.smoothed_envelope[self.map_index], 'ko', markersize=8, label="MAP")
-            """ax1.annotate(f'MAP: {self.map_pressure:.1f} mmHg',
-                         xy=(self.map_time, self.map_pressure),
-                         xytext=(self.map_time + 1, self.map_pressure + 15),
-                         arrowprops=dict(facecolor='black', shrink=0.05),
-                         bbox=dict(boxstyle="round,pad=0.3", fc="yellow", ec="k", lw=1, alpha=0.8))"""
+        # Oscillations & Envelope (Secondary Y-Axis)
+        fig.add_trace(go.Scatter(x=self.time, y=self.oscillations, name="Oscillations", line=dict(color='red', width=2), opacity=0.3, yaxis="y2"))
+        fig.add_trace(go.Scatter(x=self.time, y=self.smoothed_envelope, name="Smoothed Envelope", line=dict(color='black', width=1), yaxis="y2"))
 
-            ax2.plot(self.time[self.systolic_index], self.smoothed_envelope[self.systolic_index], 'go', markersize=8)
-            """ax1.annotate(f'Systolic: {self.systolic_pressure:.1f} mmHg',
-                         xy=(self.time[self.systolic_index], self.systolic_pressure),
-                         xytext=(self.time[self.systolic_index] + 1, self.systolic_pressure + 15),
-                         arrowprops=dict(facecolor='green', shrink=0.05),
-                         bbox=dict(boxstyle="round,pad=0.3", fc="lightgreen", ec="k", lw=1, alpha=0.8))"""
+        # Calculated Values
+        if self.map_pressure:
+            # MAP
+            fig.add_trace(go.Scatter(x=[self.map_time], y=[self.map_pressure], mode='markers+text', 
+                                     name="Calculated MAP", text=[f"MAP: {self.map_pressure:.1f}"],
+                                     textposition="top center", marker=dict(color='red', size=12, symbol='circle')))
+            
+            # Diastole
+            dia_time = self.time[self.diastolic_index]
+            fig.add_trace(go.Scatter(x=[dia_time], y=[self.diastolic_pressure], mode='markers+text', 
+                                     name="Calculated Dia", text=[f"Dia: {self.diastolic_pressure:.1f}"],
+                                     textposition="bottom center", marker=dict(color='blue', size=10, symbol='diamond')))
+            fig.add_vline(x=dia_time, line=dict(color='blue', width=1, dash='dot'), opacity=0.5)
 
-            ax2.plot(self.time[self.diastolic_index], self.smoothed_envelope[self.diastolic_index], 'bo', markersize=8)
-            """ax1.annotate(f'Diastolic: {self.diastolic_pressure:.1f} mmHg',
-                         xy=(self.time[self.diastolic_index], self.diastolic_pressure),
-                         xytext=(self.time[self.diastolic_index] + 1, self.diastolic_pressure + 15),
-                         arrowprops=dict(facecolor='blue', shrink=0.05),
-                         bbox=dict(boxstyle="round,pad=0.3", fc="lightblue", ec="k", lw=1, alpha=0.8))"""
+            # Systole
+            sys_time = self.time[self.systolic_index]
+            fig.add_trace(go.Scatter(x=[sys_time], y=[self.systolic_pressure], mode='markers+text', 
+                                     name="Calculated Sys", text=[f"Sys: {self.systolic_pressure:.1f}"],
+                                     textposition="top center", marker=dict(color='green', size=10, symbol='diamond')))
+            fig.add_vline(x=sys_time, line=dict(color='green', width=1, dash='dot'), opacity=0.5)
 
-        fig.tight_layout()
+        # Ground Truth (Reference)
+        if ref_sys is not None:
+            idx_sys = np.argmin(np.abs(self.ramp - ref_sys))
+            ref_time_sys = self.time[idx_sys]
+            fig.add_hline(y=ref_sys, line=dict(color='darkgreen', width=1.5, dash='dash'))
+            fig.add_annotation(xref="paper", x=1.0, y=ref_sys, text=f"Ref Sys: {ref_sys}", 
+                               showarrow=False, font=dict(color="darkgreen", size=10), 
+                               xanchor="right", yanchor="bottom")
+            fig.add_vline(x=ref_time_sys, line=dict(color='darkgreen', width=1, dash='dot'), opacity=0.3)
+
+        if ref_dia is not None:
+            idx_dia = np.argmin(np.abs(self.ramp - ref_dia))
+            ref_time_dia = self.time[idx_dia]
+            fig.add_hline(y=ref_dia, line=dict(color='darkblue', width=1.5, dash='dash'))
+            fig.add_annotation(xref="paper", x=1.0, y=ref_dia, text=f"Ref Dia: {ref_dia}", 
+                               showarrow=False, font=dict(color="darkblue", size=10), 
+                               xanchor="right", yanchor="top")
+            fig.add_vline(x=ref_time_dia, line=dict(color='darkblue', width=1, dash='dot'), opacity=0.3)
+
+        fig.update_layout(
+            title=dict(text=title, x=0.5, xanchor='center', font=dict(size=16)),
+            xaxis_title="Time [s]",
+            yaxis_title="Pressure [mmHg]",
+            yaxis2=dict(title="Amplitude", overlaying="y", side="right", showgrid=False, zeroline=False),
+            hovermode="x unified",
+            template="plotly_white",
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=-0.15,
+                xanchor="center",
+                x=0.5,
+                bgcolor='rgba(255,255,255,0.8)',
+                bordercolor='rgba(0,0,0,0.1)',
+                borderwidth=1
+            ),
+            margin=dict(l=60, r=60, t=80, b=100),
+            width=1000,
+            height=600
+        )
+
         if save_plot:
-            if filename is None:
-                filename = title
-            fig.savefig(os.path.join("analyse_imgs", f"{filename}.png"), dpi=150)
-        plt.show()
+            if not os.path.exists("Protokoll/images"):
+                os.makedirs("Protokoll/images")
+            full_path = f"Protokoll/images/{filename}.png"
+            fig.write_image(full_path, engine="kaleido", scale=2)
+            # print(f"Plot saved to {full_path}")
 
-
-def load_data(file_name: str) -> tuple[ndarray, ndarray]:
-    "Loads data from a MAT file and returns the sample time and the cuff pressure"
+def load_data(file_name: str):
     file_path = os.path.join("Messungen", f"{file_name}.mat")
     data = scipy.io.loadmat(file_path)
+    return data["vSampleTime"][0], data["vCuffPressure"][0]
 
-    if not isinstance(data, dict):
-        raise Exception("The read in File has the wrong format")
-    try:
-        sample_time: ndarray = data["vSampleTime"][0]
-        sample_vCuffPressure: ndarray = data["vCuffPressure"][0]
-        return sample_time, sample_vCuffPressure
-    except KeyError or IndexError:
-        raise Exception("The read in File has the wrong format")
-
-
-def alogrithmus(messnummer: str, begin_index: int, high_N: int, low_N: int, border_f: float, use_absolute_value: bool,
-                peaks_distance: int, window_size: float,
-                dia_treshhold: float, sys_trashhold: float
-) -> tuple[float, float, Signal]:
-    sample_time, sample_vCuffPressure = load_data(messnummer)
-    signal = Signal(sample_time, sample_vCuffPressure)
-    processed_signal = signal.extracting_ramp(
-        begin_index=begin_index,
-        high_N=high_N,
-        low_N=low_N,
-        border_f=border_f,
-        use_absolute_value=use_absolute_value
-    )
-    processed_signal.get_hüllenfunktion(
-        peaks_distance=peaks_distance,
-        window_size=window_size
-    )
-    processed_signal.get_blutdruckwerte(
-        dia_treshhold=dia_treshhold,
-        sys_trashhold=sys_trashhold
-    )
-    return processed_signal.systolic_pressure, processed_signal.diastolic_pressure, processed_signal
-
-
-
-
-
-if __name__ == "__main__":
-    filename = "P06_REST_01_191025"
-    print(filename)
-    sample_time, sample_vCuffPressure = load_data(filename)
-    signal = Signal(sample_time, sample_vCuffPressure)
-    # signal.plot_data()
-    processed_signal = signal.extracting_ramp(
-        begin_index=1,
-        high_N=2,
-        low_N=3,
-        border_f=1.648475101296686,
-        use_absolute_value=False
-    )
-    processed_signal.get_hüllenfunktion(
-        peaks_distance=154,
-        window_size=2.291477696530879
-    )
-    processed_signal.get_blutdruckwerte(
-        dia_treshhold=0.7482381534642903,
-        sys_trashhold=0.8618229257116254
-    )
-    processed_signal.plot_data(title="P06_REST_01_191025", save_plot=True)
-    print(f"Diastolic Pressure: {processed_signal.diastolic_pressure} mmHg\n"
-          f"Systolic Pressure: {processed_signal.systolic_pressure} mmHg\n"
-          f"MAP: {processed_signal.map_pressure} mmHg\n")
-
+def alogrithmus_optimized(messnummer, begin_index, high_N, low_N, border_f, peaks_distance, window_size, dia_treshhold, sys_trashhold):
+    time, press = load_data(messnummer)
+    sig = Signal(time, press)
+    proc = sig.extracting_ramp(begin_index, high_N, low_N, border_f)
+    proc.get_hüllenfunktion(peaks_distance, window_size)
+    proc.get_blutdruckwerte(dia_treshhold, sys_trashhold)
+    return proc.systolic_pressure, proc.diastolic_pressure, proc

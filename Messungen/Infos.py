@@ -216,44 +216,25 @@ MEASUREMENT_INFORMATION: dict = {
     },
 }
 
-
-COMBINED_BEST = {
-    "begin_index": 4,
-    "high_N": 8,
-    "low_N": 2,
-    "border_f": 1.3618632141628064,
-    "use_absolute_value": True,
-    "peaks_distance": 130,
-    "window_size": 5.6119152611238885,
-    "dia_treshhold": 0.7255318911571096,
-    "sys_trashhold": 0.8569972699918027
+STOERMESSUNGEN = {
+    "P08_REST_02_201025": {
+        "Beurer": (124, 64),
+        "NAIS": (124, 75),
+        "Titel": "Beine überkreuzt und Manschette verdreht"
+    },
+    "P08_REST_03_201025": {
+        "Beurer": (124, 64),
+        "NAIS": (124, 75),
+        "Titel": "Bewegen von beiden Armen"
+    },
+    "P08_REST_04_201025": {
+        "Beurer": (124, 64),
+        "NAIS": (124, 75),
+        "Titel": "Mit beiden Beinen stampfen"
+    },
 }
 
 BEURER_BEST = {
-    "begin_index": 3,
-    "high_N": 2,
-    "low_N": 6,
-    "border_f": 1.1865534774567805,
-    "use_absolute_value": True,
-    "peaks_distance": 152,
-    "window_size": 5.3634623241166235,
-    "dia_treshhold": 0.6887613098188278,
-    "sys_trashhold": 0.8397497178812133
-}
-
-NAIS_BEST = {
-    "begin_index": 1,
-    "high_N": 2,
-    "low_N": 3,
-    "border_f": 1.2993508025033014,
-    "use_absolute_value": False,
-    "peaks_distance": 176,
-    "window_size": 3.7664897102734063,
-    "dia_treshhold": 0.715214015918205,
-    "sys_trashhold": 0.7684376006888789
-}
-
-BEURER_BEST_2 = {
     "begin_index": 1,
     "high_N": 3,
     "low_N": 4,
@@ -263,7 +244,7 @@ BEURER_BEST_2 = {
     "dia_treshhold": 0.6542622001096768,
     "sys_trashhold": 0.7801898727356279
 }
-NAIS_BEST_2 = {
+NAIS_BEST = {
     "begin_index": 2,
     "high_N": 4,
     "low_N": 3,
@@ -273,7 +254,7 @@ NAIS_BEST_2 = {
     "dia_treshhold": 0.6712254042695495,
     "sys_trashhold": 0.7735576100943273
 }
-COMBINED_BEST_2 = {
+COMBINED_BEST = {
     "begin_index": 1,
     "high_N": 4,
     "low_N": 3,
