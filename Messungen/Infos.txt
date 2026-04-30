@@ -1,10 +1,10 @@
 Messungen Blutdruck:
 
 Subjekte: 
-P01 — Jonathan
-P02 — Antonio
-P03 — Elena
-P04 — Marcel
+P01 — Jonathan - 22J
+P02 — Antonio - 51J
+P03 — Elena - 50J
+P04 — Marcel - 18J
 
 P05 - Lukas
 P06 - Monika
