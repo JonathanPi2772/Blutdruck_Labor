@@ -114,7 +114,7 @@ def generate_bland_altman_plotly():
         fig.update_layout(
             title=title,
             xaxis_title=x_label,  # <-- Hier wird der neue Parameter verwendet
-            yaxis_title="Differenz (Algo - Ref) [mmHg]",
+            yaxis_title="Differenz (Algorithmus - Ref) [mmHg]",
             template="plotly_white"
         )
         fig.write_image(f"Protokoll/images/{filename}.png", engine="kaleido", scale=2)
