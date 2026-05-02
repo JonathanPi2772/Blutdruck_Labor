@@ -22,7 +22,7 @@
 \usepackage[left=2.25cm, right=2.25cm, top=2.5cm, bottom=2.5cm]{geometry} % Abstände zu Seitenrändern 
 
 % Anderes
-\usepackage[backend=bibtex, style=numeric, giveninits=true, minnames=2, maxnames=2]{biblatex}
+\usepackage[backend=biber, style=numeric, giveninits=true, minnames=2, maxnames=2]{biblatex}
 \addbibresource{references.bib}
 
 \usepackage{scalerel}
@@ -302,19 +302,20 @@ Um die Einhüllende der Oszillationen zu bestimmen, wird ein Peak-Detection-Algo
 
 Anstelle einer einfachen linearen Verbindung oder herkömmlicher kubischer Splines wird zur Interpolation der Einhüllenden die \textbf{Piecewise Cubic Hermite Interpolating Polynomial (PCHIP)} Methode verwendet. Während klassische Splines zur globalen Glattheit neigen und dabei oft \q{Überschwinger} (künstliche Oszillationen zwischen den Stützstellen) erzeugen, ist PCHIP form- und monotonieerhaltend \cite{fritsch1980monotone}. Dies ist für die oszillometrische Auswertung entscheidend, da künstliche Maxima zwischen den Pulsen die Bestimmung der Schwellenwerte verfälschen würden.
 
-Die theoretische Grundlage für die Verwendung von Amplitudenverhältnissen auf dieser so gewonnenen Hüllkurve (MAA-Prinzip) wird in der Literatur, insbesondere bei Geddes et al. \cite{Formulas}, ausführlich beschrieben. Die Wahl von PCHIP stellt hierbei eine sinnvolle Umsetzung dar, um die in der Literatur genannten Voraussetzungen auf unsere Messungen anzuwenden.
+Die theoretische Grundlage für die Verwendung von Amplitudenverhältnissen auf dieser so gewonnenen Hüllkurve (MAA-Prinzip) wird in der Literatur, insbesondere bei Geddes et al. \cite{Formulas}, ausführlich beschrieben. Dadurch eignet sich PCHIP ideal, um eine verlässliche Hüllkurve zu berechnen, wie sie für die Auswertung nach den Literaturvorgaben zwingend benötigt wird.
 
-Zusätzlich wird die so gewonnene Hüllkurve durch einen gleitenden Mittelwert (\textit{Moving Average}) geglättet, um Rauschen zu minimieren und eine stabile Bestimmung des Maximums zu ermöglichen. Die Fensterbreite (\textit{window\_size}) wird dabei so gewählt, dass sie in etwa zwei bis drei Herzzyklen entspricht.
+
+Zusätzlich wird die so gewonnene Hüllkurve durch einen gleitenden Mittelwert (Moving Average) geglättet, um Rauschen zu minimieren und eine stabile Bestimmung des Maximums zu ermöglichen. Die Fensterbreite (\textit{window\_size}) wird dabei so gewählt, dass sie in etwa zwei bis drei Herzzyklen entspricht.
 
 \newpage
 \subsection{Maximum Amplitude Algorithm (MAA)}
-Die Schätzung des systolischen und diastolischen Blutdrucks basiert auf dem weit verbreiteten \textit{Maximum Amplitude Algorithm} (MAA). Dabei wird davon ausgegangen, dass das Maximum der Hüllkurve dem mittleren arteriellen Druck (MAP) entspricht \cite{Automated}.
+Die Schätzung des systolischen und diastolischen Blutdrucks basiert auf dem weit verbreiteten Maximum Amplitude Algorithm (MAA). Dabei wird davon ausgegangen, dass das Maximum der Hüllkurve dem mittleren arteriellen Druck (MAP) entspricht \cite{Automated}.
 \begin{itemize}
     \item \textbf{MAP:} Manschettendruck am Zeitpunkt der maximalen Oszillationsamplitude.
     \item \textbf{Systole ($P_{sys}$):} Druckwert auf der abfallenden Flanke der Hüllkurve (bei Inflation), an dem die Amplitude einen bestimmten Bruchteil des Maximums unterschreitet (z.B. 75\% \cite{Formulas}).
     \item \textbf{Diastole ($P_{dia}$):} Druckwert auf der ansteigenden Flanke der Hüllkurve, an dem die Amplitude einen bestimmten Bruchteil des Maximums erreicht (z.B. 55\% \cite{Formulas}).
 \end{itemize}
-Da diese Schwellenwerte (\textit{Thresholds}) stark von der Manschettengeometrie und der nicht vollständig bekannten technischen Bauweise des Labor-Prototyps abhängen können, wurden sie im Rahmen dieses Versuchs durch eine automatische Parameteroptimierung verfeinert.
+Da diese Schwellenwerte (Thresholds) stark von der Manschettengeometrie und der nicht vollständig bekannten technischen Bauweise des Labor-Prototyps abhängen können, wurden sie im Rahmen dieses Versuchs durch eine automatische Parameteroptimierung verfeinert.
 
 \begin{figure}[H]
     \centering
@@ -329,7 +330,7 @@ Da diese Schwellenwerte (\textit{Thresholds}) stark von der Manschettengeometrie
 Um die Genauigkeit des Algorithmus zu maximieren, wurde ein automatischer Ansatz zur Parameterwahl gewählt. Da der Algorithmus insgesamt acht einstellbare Parameter besitzt (Filterordnungen, Grenzfrequenzen, Glättungsfenster und MAA-Schwellenwerte), wurde eine automatisierte Suche im Parameterraum durchgeführt.
 
 \subsection{Optimierung mit Optuna}
-Hierfür wurde das Framework \textit{Optuna} verwendet \cite{akiba2019optuna}, welches mittels \textit{Tree-structured Parzen Estimator} (TPE) effizient das globale Optimum findet. Als Zielfunktion (\textit{Objective Function}) wurde eine Kombination aus dem mittleren absoluten Fehler (MAE) und der Standardabweichung der Fehler (SD) gegenüber den Referenzgeräten (Beurer, NAIS oder dem Mittelwert beider Messgeräte) minimiert:
+Hierfür wurde das Framework Optuna verwendet \cite{akiba2019optuna}, welches mittels Tree-structured Parzen Estimator (TPE) effizient das globale Optimum findet. Als Zielfunktion (Objective Function) wurde eine Kombination aus dem mittleren absoluten Fehler (MAE) und der Standardabweichung der Fehler (SD) gegenüber den Referenzgeräten (Beurer, NAIS oder dem Mittelwert beider Messgeräte) minimiert:
 \[ \text{Loss} = \text{MAE} + 2 \cdot \text{SD} \]
 Die starke Gewichtung der Standardabweichung stellt sicher, dass der Algorithmus nicht nur im Durchschnitt korrekt ist, sondern eine hohe Konsistenz über verschiedene Probanden und Kreislaufzustände hinweg aufweist.
 
@@ -358,19 +359,19 @@ $sys\_trashhold$ (MAA Ratio) & 0,77 & 0,78 & 0,77 \\ \hline
 \end{table}
 
 \subsection{Statistische Auswertung (Bland-Altman Plots)}
-Die Übereinstimmung zwischen dem entwickelten Algorithmus und den kommerziellen Referenzgeräten wurde mittels Bland-Altman-Diagrammen visualisiert. Diese Methode erlaubt es, systematische Messabweichungen (\textit{Bias}) sowie die Grenzen der Übereinstimmung (\textit{Limits of Agreement}, $\pm 1.96 \cdot \text{SD}$) direkt abzulesen \cite{Statistical}.
+Die Übereinstimmung zwischen dem entwickelten Algorithmus und den kommerziellen Referenzgeräten wurde mittels Bland-Altman-Diagrammen visualisiert. Diese Methode erlaubt es, systematische Messabweichungen (Bias) sowie die Grenzen der Übereinstimmung (Limits of Agreement, $\pm 1.96 \cdot \text{SD}$) direkt abzulesen \cite{Statistical}.
 
 Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenario die Übereinstimmung analysiert. Im Folgenden sind die Ergebnisse visualisiert, die interaktiven Plots sind im Jupyter Notebook zu finden.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-sys.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_sys.png}
         \caption{Systole (Kombinierte Optimierung)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-dia.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_dia.png}
         \caption{Diastole (Kombinierte Optimierung)}
     \end{subfigure}
     \caption{Bland-Altman-Plots: Algorithmus (kombiniert optimiert) vs. Mittelwert der Referenzgeräte.}
@@ -380,12 +381,12 @@ Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenari
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-beurer-sys.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_beurer_sys.png}
         \caption{Systole (Beurer Optimierung)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-beurer-dia.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_beurer_dia.png}
         \caption{Diastole (Beurer Optimierung)}
     \end{subfigure}
     \caption{Bland-Altman-Plots: Algorithmus (Beurer optimiert) vs. Referenzgerät Beurer.}
@@ -395,12 +396,12 @@ Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenari
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-nais-sys.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_nais_sys.png}
         \caption{Systole (NAIS Optimierung)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{images/bland-altman-nais-dia.png}
+        \includegraphics[width=\textwidth]{images/bland_altman_nais_dia.png}
         \caption{Diastole (NAIS Optimierung)}
     \end{subfigure}
     \caption{Bland-Altman-Plots: Algorithmus (NAIS optimiert) vs. Referenzgerät NAIS.}
@@ -413,10 +414,10 @@ Wir haben die Parameter-Optimierung dreimal durchgeführt und für jedes Szenari
 
 Die statistische Analyse der Ergebnisse zeigt eine gute Übereinstimmung des entwickelten Algorithmus mit den Referenzmessgeräten, wobei jedoch die Wahl der Optimierungsparameter einen signifikanten Einfluss auf die Genauigkeit hat.
 \subsection{Genauigkeit und Bias}
-Wie in den Bland-Altman-Plots (Abbildung \ref{fig:bland-altman-combined} bis \ref{fig:bland-altman-nais}) ersichtlich ist, liegt der systematische Fehler (\textit{Bias}) für die kombinierte Optimierung bei ca. 1,87 mmHg für die Systole und -0,10 mmHg für die Diastole. Dies deutet darauf hin, dass der Algorithmus im Mittel sehr nah an den Referenzwerten liegt und keine starke systematische Über- oder Unterschätzung vornimmt. 
+Wie in den Bland-Altman-Plots (Abbildung \ref{fig:bland-altman-combined} bis \ref{fig:bland-altman-nais}) ersichtlich ist, liegt der systematische Fehler (Bias) für die kombinierte Optimierung bei ca. 1,87 mmHg für die Systole und -0,10 mmHg für die Diastole. Dies deutet darauf hin, dass der Algorithmus im Mittel sehr nah an den Referenzwerten liegt und keine starke systematische Über- oder Unterschätzung vornimmt.
 
 \subsection{Subgruppen-Analyse: Vergleich der Messreihen P und S}
-Ein wesentlicher Teil der Validierung war der Vergleich zwischen den beiden Messreihen \textit{P} (eigene Messungen) und \textit{S} (Messungen der Gruppe Ziyi/Hanna). Obwohl beide Gruppen die gleichen Referenzgeräte verwendeten, zeigen die Daten signifikante systematische Unterschiede (siehe Tabelle \ref{tab:subgruppen}).
+Ein wesentlicher Teil der Validierung war der Vergleich zwischen den beiden Messreihen P (eigene Messungen) und S (Messungen der Gruppe Ziyi/Hanna). Obwohl beide Gruppen die gleichen Referenzgeräte verwendeten, zeigen die Daten signifikante systematische Unterschiede (siehe Tabelle \ref{tab:subgruppen}).
 
 \begin{table}[H]
 \centering
@@ -434,16 +435,16 @@ Auffallend ist der \q{Bias-Shift} bei der Systole: Während der Algorithmus bei 
 
 Diese Differenzen lassen sich auf zwei Hauptfaktoren zurückführen:
 \begin{enumerate}
-    \item \textbf{Druckbereich:} Die Probanden der Gruppe S wiesen tendenziell höhere Blutdruckwerte auf (bis zu 170 mmHg systolisch). In höheren Druckbereichen verändern sich die elastischen Eigenschaften der Arterienwand (Zunahme der Steifigkeit), was die Form der Oszillations-Einhüllenden und damit die empirischen Amplitudenverhältnisse (MAA-Ratios) beeinflussen kann \cite{Future}\cite{Formulas}.
+    \item \textbf{Druckbereich:} Die Probanden der Gruppe S wiesen tendenziell höhere Blutdruckwerte auf (bis zu 170 mmHg systolisch). In höheren Druckbereichen verändern sich die Eigenschaften der Arterien, was die Form der Glockenkurve und damit die Amplitudenverhältnisse (MAA-Ratios) beeinflussen kann \cite{parati2013blood}.
     \item \textbf{Messtechnik:} Da Gruppe S einen höheren Bias und eine größere Standardabweichung (SD = 11,0 vs. 6,7 mmHg) zeigt, ist eine variablere Manschettenapplikation oder eine höhere Anfälligkeit für Bewegungsartefakte bei diesen Messungen wahrscheinlich.
 \end{enumerate}
 
 Die Tatsache, dass die Diastole in beiden Gruppen stabil bei einem MAE von ca. 5 mmHg liegt, spricht für die Robustheit des gewählten diastolischen Schwellenwerts.
 
-Zusätzlich zeigt die gerätespezifische Auswertung (siehe Abbildung \ref{fig:bland-altman-beurer} und \ref{fig:bland-altman-nais}), dass die Wahl des Referenzgeräts den Bias beeinflusst. Bei der Optimierung auf das \textit{Beurer}-Gerät zeigt sich ein systematischer Bias von ca. 4,6 mmHg (Systole), während die \textit{NAIS}-Optimierung zu einem negativen Bias von ca. -3,0 mmHg führt. Dies deutet eine leichte systematische Abweichung zwischen den beiden kommerziellen Referenzgeräten an.
+Zusätzlich zeigt die gerätespezifische Auswertung (siehe Abbildung \ref{fig:bland-altman-beurer} und \ref{fig:bland-altman-nais}), dass die Wahl des Referenzgeräts den Bias beeinflusst. Bei der Optimierung auf das Beurer-Gerät zeigt sich ein systematischer Bias von ca. 4,6 mmHg (Systole), während die NAIS-Optimierung zu einem negativen Bias von ca. -3,0 mmHg führt. Dies deutet eine leichte systematische Abweichung zwischen den beiden kommerziellen Referenzgeräten an.
 
 \subsection{Präzision und Streuung}
-Die Streuung der Messwerte (\textit{Limits of Agreement}) ist mit ca. $\pm 15$ bis $\pm 25$ mmHg relativ weit gefasst. Dies ist auf mehrere Faktoren zurückzuführen:
+Die Streuung der Messwerte (Limits of Agreement) ist mit ca. $\pm 15$ bis $\pm 25$ mmHg relativ weit gefasst. Dies ist auf mehrere Faktoren zurückzuführen:
 \begin{itemize}
     \item \textbf{Physiologische Variabilität:} Blutdruck ist keine statische Größe. Da die Referenzmessungen  zeitnah nacheinander durchgeführt wurden, können physiologische Schwankungen die Differenz erhöhen \cite{parati2013blood}. Es ist nicht möglich die exakt selben Bedingungen immer wieder zu rekonstruieren.
     \item \textbf{Algorithmische Grenzen:} Die Verwendung von festen Amplitudenverhältnissen (MAA-Verfahren) ist eine einfache Schätzung anhand unserer Messwerte. Professionelle Geräte könnten komplexere Filter und eventuell kurvenformabhängige Modelle nutzen, um bessere Vohersagen zu machen.
@@ -509,7 +510,7 @@ Das Projekt ist in einem \href{https://github.com/JonathanPi2772/Blutdruck_Labor
     \begin{itemize}
         \item \texttt{Analysis.ipynb}: Das zentrale Jupyter Notebook mit interaktiven Plots für die explorative Datenanalyse, Visualisierung und Auswertung.
         \item \texttt{BlutdruckMesser.py}: Enthält die Klasse \texttt{Signal} und die Kernlogik des Algorithmus (Filterung, Extraktion der Hüllkurve, Blutdruckbestimmung).
-        \item \texttt{optimizer.py}: Skript zur automatisierten Parameter-Optimierung mittels \textit{Optuna}.
+        \item \texttt{optimizer.py}: Skript zur automatisierten Parameter-Optimierung mittels Optuna.
         \item \texttt{requirements.txt}: Liste der benötigten Python-Bibliotheken.
     \end{itemize}
 
@@ -517,7 +518,7 @@ Das Projekt ist in einem \href{https://github.com/JonathanPi2772/Blutdruck_Labor
     \begin{itemize}
         \item \texttt{Messungen/}: Enthält alle Rohdaten im \texttt{.mat}-Format, unterteilt in eigene Messungen (P01-P08) und die Messreihe von Ziyi/Hanna (S001-S013).
         \item \texttt{Parameters/}: Speichert die durch die Optimierung gefundenen besten Parameter-Sets als JSON-Dateien.
-        \item \texttt{Protokoll/}: Beinhaltet den LaTeX-Quellcode (\texttt{main.tex}), die Literaturdatenbank (\texttt{references.bib}) sowie den Ordner \texttt{images/} mit allen generierten Grafiken.
+        \item \texttt{Protokoll/}: Beinhaltet den LaTeX-Quellcode (\texttt{main.tex}), die Literaturdatenbank (\texttt{references.bib}), das Protokoll (\texttt{main.pdf}) sowie den Ordner \texttt{images/} mit allen generierten Grafiken.
         \item \texttt{html\_files/}: Exportierte Versionen der Analyse für die Ansicht im Webbrowser ohne Jupyter-Umgebung.
         \item \texttt{Literatur/}: PDF-Dokumente der verwendeten wissenschaftlichen Quellen.
     \end{itemize}
@@ -525,9 +526,11 @@ Das Projekt ist in einem \href{https://github.com/JonathanPi2772/Blutdruck_Labor
 
 \newpage
 
-\input{appendix.tex}
-
-
+\renewcommand\refname{}
+\section{Literatur}
 \printbibliography
+
+\newpage
+\input{appendix.tex}
 
 \end{document}
